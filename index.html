@@ -27,7 +27,8 @@
       copyButton.classList.add('hidden');
 
       try {
-        const response = await fetch(`/.netlify/functions/convert?lld=${encodeURIComponent(input)}`);
+        const response = await fetch(`https://prairie-pin.vercel.app/api/convert?lld=${encodeURIComponent(input)}`);
+
 
         if (!response.ok) {
           output.textContent = `Error: ${response.status} ${response.statusText}`;
