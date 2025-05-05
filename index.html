@@ -27,8 +27,7 @@
       copyButton.classList.add('hidden');
 
       try {
-        const response = await fetch(`https://prairie-pin.vercel.app/api/convert?lld=${encodeURIComponent(input)}`);
-
+        const response = await fetch(`https://966121af-7fab-440c-bc95-f440a7b1649a-00-3tadungv7mxvd.janeway.replit.dev/convert?lld=${encodeURIComponent(input)}`);
 
         if (!response.ok) {
           output.textContent = `Error: ${response.status} ${response.statusText}`;
