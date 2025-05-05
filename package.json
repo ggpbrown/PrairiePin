@@ -1,0 +1,23 @@
+{
+  "name": "prairiepin",
+  "version": "1.0.0",
+  "description": "[![Netlify Status](https://api.netlify.com/api/v1/badges/4918dadf-e830-48af-93e2-2b334e8211a8/deploy-status)](https://app.netlify.com/sites/prairiepin/deploys) ![GitHub last commit](https://img.shields.io/github/last-commit/ggpbrown/PrairiePin?color=green)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ggpbrown/PrairiePin.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ggpbrown/PrairiePin/issues"
+  },
+  "homepage": "https://github.com/ggpbrown/PrairiePin#readme",
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  }
+}
