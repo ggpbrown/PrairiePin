@@ -1,50 +1,33 @@
 const fetch = require('node-fetch');
 
 exports.handler = async function(event, context) {
-  const { lld } = event.queryStringParameters;
-  const apiKey = process.env.TOWNSHIP_API_KEY;
-  const apiUrl = `https://api.townshipcanada.com/api/v1/search?query=${encodeURIComponent(lld)}`;
-
-  // 🔍 Debugging logs
-  console.log("Received LLD:", lld);
-  console.log("API key exists?", !!apiKey);
-  console.log("API URL:", apiUrl);
+  const lld = event.queryStringParameters.lld;
 
   if (!lld) {
     return {
       statusCode: 400,
-      body: JSON.stringify({ error: 'Missing LLD parameter' }),
+      body: JSON.stringify({ error: 'Missing LLD parameter' })
     };
   }
 
+  const replitUrl = `https://dlstomapbackend-ggpbrown.replit.app/convert?lld=${encodeURIComponent(lld)}`;
+
   try {
-    const response = await fetch(apiUrl, {
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-      },
-    });
-
+    const response = await fetch(replitUrl);
     const data = await response.json();
-    const pointFeature = data.features.find(f => f.geometry.type === 'Point');
-
-    if (!pointFeature) {
-      return {
-        statusCode: 404,
-        body: JSON.stringify({ error: 'No coordinates found' }),
-      };
-    }
-
-    const [longitude, latitude] = pointFeature.geometry.coordinates;
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ latitude, longitude }),
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
     };
   } catch (error) {
-    console.error("Fetch failed:", error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'Server error. Try again later.' }),
+      body: JSON.stringify({ error: 'Proxy error: ' + error.message })
     };
   }
 };
