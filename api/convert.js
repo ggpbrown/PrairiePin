@@ -8,12 +8,12 @@ module.exports = async (req, res) => {
     return res.status(400).json({ error: 'Missing LLD parameter' });
   }
 
-  const apiUrl = `https://api.townshipcanada.com/v2/search?query=${encodeURIComponent(lld)}`;
+  const apiUrl = `https://developer.townshipcanada.com/v2/search?query=${encodeURIComponent(lld)}`;
 
   try {
     const response = await fetch(apiUrl, {
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
+        'Authorization': `key=${apiKey}`,
         'Accept': 'application/json'
       }
     });
