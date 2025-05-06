@@ -4,7 +4,7 @@
   "description": "[![Netlify Status](https://api.netlify.com/api/v1/badges/4918dadf-e830-48af-93e2-2b334e8211a8/deploy-status)](https://app.netlify.com/sites/prairiepin/deploys) ![GitHub last commit](https://img.shields.io/github/last-commit/ggpbrown/PrairiePin?color=green)",
   "main": "index.js",
   "scripts": {
-  "start": "node server.js"
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/ggpbrown/PrairiePin#readme",
   "dependencies": {
+    "express": "^5.1.0",
     "node-fetch": "^2.7.0"
   }
 }
