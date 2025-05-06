@@ -12,12 +12,12 @@ app.get('/convert', async (req, res) => {
     return res.status(400).json({ error: 'Missing LLD parameter' });
   }
 
-  const apiUrl = `https://api.townshipcanada.com/api/v1/search?query=${encodeURIComponent(lld)}`;
+  const apiUrl = `https://developer.townshipcanada.com/search/legal-location?location=${encodeURIComponent(lld)}`;
 
   try {
     const response = await fetch(apiUrl, {
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
+        'x-api-key': apiKey,
         'Accept': 'application/json'
       }
     });
