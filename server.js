@@ -1,6 +1,7 @@
 const express = require('express');
 const fetch = require('node-fetch');
-
+const cors = require('cors');
+app.use(cors());
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -13,6 +14,7 @@ app.get('/convert', async (req, res) => {
   }
 
   const apiUrl = `https://developer.townshipcanada.com/search/legal-location?location=${encodeURIComponent(lld)}`;
+  
 
   try {
     const response = await fetch(apiUrl, {
