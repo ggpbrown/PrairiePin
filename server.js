@@ -24,15 +24,17 @@ app.get('/convert', async (req, res) => {
 
     const data = await response.json();
 
-    const pointFeature = data.features?.find(f => f.geometry?.type === 'Point');
+    const pointFeature = data.features?.find(
+  (f) => f.geometry?.type === 'Point'
+);
 
-    if (!pointFeature) {
-      return res.status(404).json({ error: 'No coordinates found' });
-    }
+if (!pointFeature) {
+  return res.status(404).json({ error: 'No coordinates found' });
+}
 
-    const [longitude, latitude] = pointFeature.geometry.coordinates;
+const [longitude, latitude] = pointFeature.geometry.coordinates;
 
-    return res.status(200).json({ latitude, longitude });
+res.status(200).json({ latitude, longitude });
   } catch (error) {
     console.error("Fetch failed:", error);
     return res.status(500).json({ error: 'Server error. Try again later.' });
