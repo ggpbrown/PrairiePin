@@ -3,6 +3,7 @@ const fetch = require('node-fetch');
 module.exports = async (req, res) => {
   const lld = req.query.lld;
   const apiKey = process.env.TOWNSHIP_API_KEY;
+  
 
   if (!lld) {
     return res.status(400).json({ error: 'Missing LLD parameter' });
