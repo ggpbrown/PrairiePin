@@ -1,9 +1,12 @@
+const express = require('express');
 const fetch = require('node-fetch');
 
-module.exports = async (req, res) => {
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.get('/convert', async (req, res) => {
   const lld = req.query.lld;
   const apiKey = process.env.TOWNSHIP_API_KEY;
-  
 
   if (!lld) {
     return res.status(400).json({ error: 'Missing LLD parameter' });
@@ -11,21 +14,15 @@ module.exports = async (req, res) => {
 
   const apiUrl = `https://api.townshipcanada.com/api/v1/search?query=${encodeURIComponent(lld)}`;
 
-
   try {
     const response = await fetch(apiUrl, {
       headers: {
         'Authorization': `Bearer ${apiKey}`,
         'Accept': 'application/json'
       }
-
     });
 
-
     const data = await response.json();
-    console.log("LLD requested:", lld);
-    console.log("Full API response:", JSON.stringify(data, null, 2));
-
 
     const pointFeature = data.features?.find(f => f.geometry?.type === 'Point');
 
@@ -40,7 +37,7 @@ module.exports = async (req, res) => {
     console.error("Fetch failed:", error);
     return res.status(500).json({ error: 'Server error. Try again later.' });
   }
-};
+});
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
