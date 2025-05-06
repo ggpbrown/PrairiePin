@@ -8,17 +8,23 @@ module.exports = async (req, res) => {
     return res.status(400).json({ error: 'Missing LLD parameter' });
   }
 
-  const apiUrl = `https://developer.townshipcanada.com/v2/search?query=${encodeURIComponent(lld)}`;
+  const apiUrl = `https://api.townshipcanada.com/api/v1/search?query=${encodeURIComponent(lld)}`;
+
 
   try {
     const response = await fetch(apiUrl, {
       headers: {
-        'Authorization': `key=${apiKey}`,
+        'Authorization': `Bearer ${apiKey}`,
         'Accept': 'application/json'
       }
+
     });
 
+
     const data = await response.json();
+    console.log("LLD requested:", lld);
+    console.log("Full API response:", JSON.stringify(data, null, 2));
+
 
     const pointFeature = data.features?.find(f => f.geometry?.type === 'Point');
 
