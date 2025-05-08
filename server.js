@@ -17,6 +17,10 @@ app.use(express.json()); // don't forget this if you're accepting JSON bodies
 app.get('/convert', async (req, res) => {
   const lld = req.query.lld;
   const apiKey = process.env.TOWNSHIP_API_KEY;
+  const authRoutes = require('./server/auth');
+  app.use(express.json());
+  app.use(authRoutes);
+
 
   if (!lld) {
     return res.status(400).json({ error: 'Missing LLD parameter' });
