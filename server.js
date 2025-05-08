@@ -2,15 +2,17 @@ const express = require('express');
 const fetch = require('node-fetch');
 const cors = require('cors');
 
+const app = express(); // move this ABOVE app.use
+const PORT = process.env.PORT || 3000;
+
 const corsOptions = {
-  origin: 'https://prairiepin.netlify.app',
+  origin: 'https://prairiepin-auth.netlify.app', // This should match your Netlify *auth* subdomain
   optionsSuccessStatus: 200
 };
 
 app.use(cors(corsOptions));
+app.use(express.json()); // don't forget this if you're accepting JSON bodies
 
-const app = express();
-const PORT = process.env.PORT || 3000;
 
 app.get('/convert', async (req, res) => {
   const lld = req.query.lld;
