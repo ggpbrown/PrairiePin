@@ -6,7 +6,12 @@ const { Pool } = require('pg');
 require('dotenv').config();
 
 const router = express.Router();
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
 const JWT_SECRET = process.env.JWT_SECRET || 'changeme';
 
 // User login
