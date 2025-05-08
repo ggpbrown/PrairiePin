@@ -19,16 +19,11 @@ app.get('/convert', async (req, res) => {
   const lld = req.query.lld;
   const apiKey = process.env.TOWNSHIP_API_KEY;
 
-  // Your convert logic here...
-});
-
-
   if (!lld) {
     return res.status(400).json({ error: 'Missing LLD parameter' });
   }
 
   const apiUrl = `https://developer.townshipcanada.com/search/legal-location?location=${encodeURIComponent(lld)}`;
-  
 
   try {
     const response = await fetch(apiUrl, {
@@ -42,7 +37,6 @@ app.get('/convert', async (req, res) => {
 
     console.log("LLD requested:", lld);
     console.log("Full API response:", JSON.stringify(data, null, 2));
-    
 
     const pointFeature = data.features?.find(
       (f) => f.geometry?.type === 'Point'
@@ -55,12 +49,12 @@ app.get('/convert', async (req, res) => {
     const [longitude, latitude] = pointFeature.geometry.coordinates;
 
     return res.status(200).json({ latitude, longitude });
-    
+
   } catch (error) {
     console.error("Fetch failed:", error);
     return res.status(500).json({ error: 'Server error. Try again later.' });
   }
-});
+}); // ✅ THIS is where the handler should end
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
