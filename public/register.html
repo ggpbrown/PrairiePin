@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register | PrairiePin Auth</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div class="bg-white shadow-lg rounded-lg p-8 max-w-md w-full">
+    <h1 class="text-2xl font-bold mb-4 text-center">Register for PrairiePin</h1>
+    <form id="registerForm" class="space-y-4">
+      <input type="email" id="email" placeholder="Email" required class="w-full p-2 border rounded"/>
+      <input type="password" id="password" placeholder="Password" required class="w-full p-2 border rounded"/>
+      <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded">Register</button>
+    </form>
+    <p id="message" class="mt-4 text-center text-sm text-gray-700"></p>
+  </div>
+
+  <script>
+    const form = document.getElementById('registerForm');
+    const msg = document.getElementById('message');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      try {
+        const res = await fetch('https://prairiepin-production.up.railway.app/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          msg.textContent = '🎉 Registered successfully! You can now log in.';
+          msg.classList.remove('text-red-600');
+          msg.classList.add('text-green-600');
+        } else {
+          msg.textContent = data.error || 'Something went wrong.';
+          msg.classList.remove('text-green-600');
+          msg.classList.add('text-red-600');
+        }
+      } catch (err) {
+        msg.textContent = 'Server error. Please try again later.';
+        msg.classList.add('text-red-600');
+      }
+    });
+  </script>
+</body>
+</html>
+
+
