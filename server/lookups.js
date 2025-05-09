@@ -13,6 +13,8 @@ const pool = new Pool({
 
 // Protected route: fetch stats
 router.get('/lookups', authenticateToken, async (req, res) => {
+	console.log("➡️ /lookups called by user:", req.user?.userId);
+
   const userId = req.user.userId;
 
   try {
@@ -31,6 +33,5 @@ router.get('/lookups', authenticateToken, async (req, res) => {
   }
 });
 
-console.log("➡️ /lookups called by user:", req.user?.userId);
 
 module.exports = router;
