@@ -21,6 +21,7 @@
     <input id="lld" type="text" class="w-full px-4 py-2 border rounded mb-4" placeholder="SW-12-34-1-W4">
 
     <button onclick="convertLLD()" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">Convert</button>
+	<button onclick="trySample()" class="w-full bg-gray-200 text-gray-800 py-2 rounded mt-2 hover:bg-gray-300">Try a Sample</button>
 
     <div id="result" class="mt-4 hidden">
       <p><strong>Latitude:</strong> <span id="latitude"></span></p>
@@ -69,6 +70,12 @@
       const text = `${lat}, ${lng}`;
       navigator.clipboard.writeText(text);
     }
+    
+    function trySample() {
+		document.getElementById('lld').value = 'NW-4-65-19-W4';
+		convertLLD();
+}
+
   </script>
   
   <p id="lookup-count">Loading lookup count...</p>
