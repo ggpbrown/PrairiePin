@@ -73,6 +73,21 @@
   
   <p id="lookup-count">Loading lookup count...</p>
 
+	<h2>Recent Lookups</h2>
+					<table id="lookup-table" border="1" cellpadding="6">
+						<thead>
+							<tr>
+								<th>LLD</th>
+								<th>Latitude</th>
+								<th>Longitude</th>
+								<th>Time</th>
+							</tr>
+						</thead>
+					  <tbody id="lookup-rows">
+		    <!-- Data goes here -->
+		  </tbody>
+		</table>
+
   <script>
   async function fetchLookups() {
     const token = localStorage.getItem('token');
@@ -89,6 +104,21 @@
       if (Array.isArray(data)) {
         const count = data.length;
         document.getElementById('lookup-count').textContent = `You’ve done ${count} lookup(s).`;
+
+        const tbody = document.getElementById('lookup-rows');
+        tbody.innerHTML = '';
+
+        data.forEach(row => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td class="border px-2 py-1">${row.lld_entered}</td>
+            <td class="border px-2 py-1">${row.latitude}</td>
+            <td class="border px-2 py-1">${row.longitude}</td>
+            <td class="border px-2 py-1">${new Date(row.timestamp).toLocaleString()}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+
       } else {
         document.getElementById('lookup-count').textContent = 'Unable to load lookup data.';
       }
@@ -101,5 +131,7 @@
   fetchLookups();
 </script>
 
+
+		
 </body>
 </html>
