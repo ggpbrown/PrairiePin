@@ -43,6 +43,7 @@ app.get('/convert', async (req, res) => {
   }
 
   const apiUrl = `https://developer.townshipcanada.com/search/legal-location?location=${encodeURIComponent(lld)}`;
+  
 
   try {
     const response = await fetch(apiUrl, {
@@ -53,6 +54,9 @@ app.get('/convert', async (req, res) => {
     });
 
     const data = await response.json();
+    console.log("📦 TownshipCanada response:");
+	console.dir(data, { depth: null });
+
     const pointFeature = data.features?.find(f => f.geometry?.type === 'Point');
 
     if (!pointFeature) {
