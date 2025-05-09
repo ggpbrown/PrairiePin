@@ -27,8 +27,6 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(authRoutes);
 app.use('/dashboard', dashboardRoutes);
-
-app.use(cors(corsOptions));
 app.use(express.json());       // For parsing JSON requests
 app.use(authRoutes);          // ⬅️ Register /register and other auth routes here
 
