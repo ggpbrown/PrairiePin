@@ -1,5 +1,6 @@
 // server/auth.js
-const bcrypt = require('bcryptjs'); // ✅ Make sure this matches
+const express = require('express');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { Pool } = require('pg');
 require('dotenv').config();
