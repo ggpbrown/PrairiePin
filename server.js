@@ -31,12 +31,11 @@ app.use(lookupRoutes);
 
 
 app.get('/convert', async (req, res) => {
-
 	console.log("✅ Reached /convert");
 	console.log("➡️ Authorization Header:", req.headers.authorization);
 	
-  const lld = req.query.lld;
-  const apiKey = process.env.TOWNSHIP_API_KEY;
+	const lld = req.query.lld;
+	const apiKey = process.env.TOWNSHIP_API_KEY;
 
   if (!lld) {
     return res.status(400).json({ error: 'Missing LLD parameter' });
