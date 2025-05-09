@@ -10,6 +10,7 @@ const fetch = require('node-fetch');
 const cors = require('cors');
 const authRoutes = require('./server/auth');
 const dashboardRoutes = require('./server/dashboard');
+const lookupRoutes = require('./server/lookups');
 
 const app = express(); // ✅ First usage of `app`
 
@@ -28,6 +29,7 @@ app.use('/dashboard', dashboardRoutes);
 app.use(cors(corsOptions));
 app.use(express.json());       // For parsing JSON requests
 app.use(authRoutes);          // ⬅️ Register /register and other auth routes here
+app.use(lookupRoutes);
 
 app.get('/convert', async (req, res) => {
   const lld = req.query.lld;
