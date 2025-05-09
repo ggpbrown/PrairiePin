@@ -86,7 +86,6 @@ app.get('/convert', async (req, res) => {
  // ✅ THIS is where the handler should end
  
   console.log("➡️ /convert called");
-  console.log("Auth header:", req.headers.authorization);
   
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
