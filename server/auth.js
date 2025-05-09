@@ -1,5 +1,4 @@
 // server/auth.js
-const bcrypt = require('bcryptjs');
 const bcrypt = require('bcryptjs'); // ✅ Make sure this matches
 const jwt = require('jsonwebtoken');
 const { Pool } = require('pg');
