@@ -31,6 +31,10 @@ app.use(lookupRoutes);
 
 
 app.get('/convert', async (req, res) => {
+
+	console.log("✅ Reached /convert");
+	console.log("➡️ Authorization Header:", req.headers.authorization);
+	
   const lld = req.query.lld;
   const apiKey = process.env.TOWNSHIP_API_KEY;
 
@@ -78,9 +82,13 @@ app.get('/convert', async (req, res) => {
     console.error("Fetch failed:", error);
     return res.status(500).json({ error: 'Server error. Try again later.' });
   }
+  
 });
  // ✅ THIS is where the handler should end
-
+ 
+  console.log("➡️ /convert called");
+  console.log("Auth header:", req.headers.authorization);
+  
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
