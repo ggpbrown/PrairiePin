@@ -14,21 +14,20 @@ const dashboardRoutes = require('./server/dashboard');
 const lookupRoutes = require('./server/lookups');
 
 const app = express(); // ✅ First usage of `app`
-app.use(lookupRoutes);
 
 const PORT = process.env.PORT || 3000;
 
 const corsOptions = {
-  origin: 'https://prairiepin-auth.netlify.app',
-  optionsSuccessStatus: 200
+  origin: true,
+  credentials: true
 };
 
 app.use(cors(corsOptions));
-app.use(express.json());
-app.use(authRoutes);
-app.use('/dashboard', dashboardRoutes);
 app.use(express.json());       // For parsing JSON requests
+
 app.use(authRoutes);          // ⬅️ Register /register and other auth routes here
+app.use('/dashboard', dashboardRoutes);
+app.use(lookupRoutes);
 
 
 app.get('/convert', async (req, res) => {
