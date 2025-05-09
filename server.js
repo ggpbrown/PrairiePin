@@ -1,3 +1,10 @@
+const { Pool } = require('pg');
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }
+});
+
+
 const express = require('express');
 const fetch = require('node-fetch');
 const cors = require('cors');
@@ -34,13 +41,7 @@ app.get('/convert', async (req, res) => {
     });
 
     const data = await response.json();
-
-    console.log("LLD requested:", lld);
-    console.log("Full API response:", JSON.stringify(data, null, 2));
-
-    const pointFeature = data.features?.find(
-      (f) => f.geometry?.type === 'Point'
-    );
+    const pointFeature = data.features?.find((f) => f.geometry?.type === 'Point');
 
     if (!pointFeature) {
       return res.status(404).json({ error: 'No coordinates found!' });
@@ -48,13 +49,29 @@ app.get('/convert', async (req, res) => {
 
     const [longitude, latitude] = pointFeature.geometry.coordinates;
 
-    return res.status(200).json({ latitude, longitude });
+    // 🪵 Log to DB if authenticated
+    const authHeader = req.headers.authorization;
+    if (authHeader?.startsWith('Bearer ')) {
+      const token = authHeader.slice(7);
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        await pool.query(
+          'INSERT INTO lookups (user_id, lld_entered, latitude, longitude) VALUES ($1, $2, $3, $4)',
+          [decoded.userId, lld, latitude, longitude]
+        );
+        console.log(`📌 Logged lookup for user ${decoded.userId}`);
+      } catch (err) {
+        console.warn("🔐 Token invalid or missing, skipping DB log");
+      }
+    }
 
+    return res.json({ latitude, longitude });
   } catch (error) {
     console.error("Fetch failed:", error);
     return res.status(500).json({ error: 'Server error. Try again later.' });
   }
-}); // ✅ THIS is where the handler should end
+});
+ // ✅ THIS is where the handler should end
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
