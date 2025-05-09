@@ -67,22 +67,28 @@ app.get('/convert', async (req, res) => {
     const [longitude, latitude] = pointFeature.geometry.coordinates;
 
     // 📌 Log the lookup if user is authenticated
-    const authHeader = req.headers.authorization;
-    if (authHeader?.startsWith('Bearer ')) {
-      try {
-        const token = authHeader.slice(7);
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+const authHeader = req.headers.authorization;
+console.log("🔐 Checking for authHeader in /convert:", authHeader);
 
-        await pool.query(
-          'INSERT INTO lookups (user_id, lld_entered, latitude, longitude) VALUES ($1, $2, $3, $4)',
-          [decoded.userId, lld, latitude, longitude]
-        );
-
-        console.log(`📌 Logged lookup for user ${decoded.userId}`);
-      } catch (err) {
-        console.warn("🔐 Invalid or missing token; skipping log.");
-      }
-    }
+	if (authHeader?.startsWith('Bearer ')) {
+	  try {
+	    const token = authHeader.slice(7);
+	    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+	    console.log("🧪 Token verified for user:", decoded.userId);
+	
+	    const insertResult = await pool.query(
+	      'INSERT INTO lookups (user_id, lld_entered, latitude, longitude) VALUES ($1, $2, $3, $4) RETURNING id',
+	      [decoded.userId, lld, latitude, longitude]
+	    );
+	
+	    console.log("✅ DB insert complete with ID:", insertResult.rows[0].id);
+	  } catch (err) {
+	    console.warn("🔐 Invalid or missing token; skipping log.");
+	    console.error(err);
+	  }
+	} else {
+	  console.warn("❌ Missing or invalid Authorization header — skipping insert");
+	}
 
     return res.json({ latitude, longitude });
     
