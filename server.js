@@ -8,12 +8,22 @@ const pool = new Pool({
 const express = require('express');
 const fetch = require('node-fetch');
 const cors = require('cors');
-const authRoutes = require('./server/auth'); // ⬅️ Load once here
+const authRoutes = require('./server/auth');
 const dashboardRoutes = require('./server/dashboard');
-app.use(dashboardRoutes);
 
-const app = express();
+const app = express(); // ✅ First usage of `app`
+
 const PORT = process.env.PORT || 3000;
+
+const corsOptions = {
+  origin: 'https://prairiepin-auth.netlify.app',
+  optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
+app.use(express.json());
+app.use(authRoutes);
+app.use('/dashboard', dashboardRoutes);
 
 const corsOptions = {
   origin: 'https://prairiepin-auth.netlify.app',
