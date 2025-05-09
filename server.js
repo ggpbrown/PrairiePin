@@ -38,6 +38,7 @@ app.get('/convert', async (req, res) => {
   const lld = req.query.lld;
   const apiKey = process.env.TOWNSHIP_API_KEY;
 
+
   if (!lld) {
     return res.status(400).json({ error: 'Missing LLD parameter' });
   }
@@ -84,6 +85,7 @@ app.get('/convert', async (req, res) => {
     }
 
     return res.json({ latitude, longitude });
+    
   } catch (error) {
     console.error("🔥 Fetch failed:", error);
     return res.status(500).json({ error: 'Server error. Try again later.' });
