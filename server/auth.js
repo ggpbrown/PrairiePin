@@ -17,15 +17,26 @@ const JWT_SECRET = process.env.JWT_SECRET || 'changeme';
 
 
 // (Optional) Register route
-router.post('/register', async (req, res) => {
-  const { email, password } = req.body;
+rrouter.post('/register', async (req, res) => {
+  const {
+    email, password,
+    address_line1, address_line2, city,
+    province_state, postal_code, country
+  } = req.body;
+
   try {
     const hash = await bcrypt.hash(password, 10);
+
     const result = await pool.query(
-      'INSERT INTO users (email, password_hash) VALUES ($1, $2) RETURNING id',
-      [email, hash]
+      `INSERT INTO users
+      (email, password_hash, address_line1, address_line2, city, province_state, postal_code, country)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      RETURNING id`,
+      [email, hash, address_line1, address_line2, city, province_state, postal_code, country]
     );
+
     res.json({ success: true, userId: result.rows[0].id });
+
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Registration failed' });

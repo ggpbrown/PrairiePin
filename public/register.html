@@ -12,6 +12,13 @@
     <form id="registerForm" class="space-y-4">
       <input type="email" id="email" placeholder="Email" required class="w-full p-2 border rounded"/>
       <input type="password" id="password" placeholder="Password" required class="w-full p-2 border rounded"/>
+      <input type="text" name="address_line1" placeholder="Address Line 1">
+	  <input type="text" name="address_line2" placeholder="Address Line 2 (optional)">
+	  <input type="text" name="city" placeholder="City">
+	  <input type="text" name="province_state" placeholder="Province/State">
+	  <input type="text" name="postal_code" placeholder="Postal Code">
+	  <input type="text" name="country" placeholder="Country" value="Canada">
+
       <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded">Register</button>
     </form>
     <p id="message" class="mt-4 text-center text-sm text-gray-700"></p>
