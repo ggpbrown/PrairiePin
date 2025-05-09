@@ -10,27 +10,24 @@ const pool = new Pool({
 });
 
 // Protected route: fetch stats
-router.get('/lookups', async (req, res) => {
-  const authHeader = req.headers.authorization || '';
-  const token = authHeader.split(' ')[1];
-
-  if (!token) return res.status(401).json({ error: 'Unauthorized' });
+router.get('/lookups', authenticateToken, async (req, res) => {
+  const userId = req.user.userId;
 
   try {
-    const result = await pool.query(
-      `SELECT COUNT(*) AS count
-       FROM lookup_logs
-       WHERE user_id = (SELECT id FROM users WHERE id = (
-         SELECT userId FROM jsonb_populate_record(NULL::record, jsonb_build_object('userId', (SELECT id FROM users WHERE id > 0)))
-       ))`
-    );
+    const result = await pool.query(`
+      SELECT id, user_id, lld, latitude, longitude, lookup_time
+      FROM lookup_logs
+      WHERE user_id = $1
+      ORDER BY lookup_time DESC
+      LIMIT 10
+    `, [userId]);
 
-    res.json({ count: parseInt(result.rows[0].count, 10) });
+    res.json(result.rows);
   } catch (err) {
-  console.error('🔥 Error in /lookups route');
-  console.error(err.stack || err);
-  res.status(500).json({ error: 'Failed to fetch lookup data' });
-}
+    console.error("🔥 Error in /lookups route\n", err);
+    res.status(500).json({ error: 'Failed to fetch lookup history' });
+  }
 });
+
 
 module.exports = router;
