@@ -27,9 +27,10 @@ router.get('/lookups', async (req, res) => {
 
     res.json({ count: parseInt(result.rows[0].count, 10) });
   } catch (err) {
-    console.error('Lookup fetch failed:', err);
-    res.status(500).json({ error: 'Failed to fetch lookup data' });
-  }
+  console.error('🔥 Error in /lookups route');
+  console.error(err.stack || err);
+  res.status(500).json({ error: 'Failed to fetch lookup data' });
+}
 });
 
 module.exports = router;
