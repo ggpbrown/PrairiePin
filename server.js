@@ -9,6 +9,8 @@ const express = require('express');
 const fetch = require('node-fetch');
 const cors = require('cors');
 const authRoutes = require('./server/auth'); // ⬅️ Load once here
+const dashboardRoutes = require('./server/dashboard');
+app.use(dashboardRoutes);
 
 const app = express();
 const PORT = process.env.PORT || 3000;

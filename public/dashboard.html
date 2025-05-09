@@ -70,5 +70,37 @@
       navigator.clipboard.writeText(text);
     }
   </script>
+  
+  <p id="lookup-count">Loading lookup count...</p>
+
+  <script>
+document.addEventListener('DOMContentLoaded', async () => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    document.getElementById('lookup-count').textContent = '⚠️ Not logged in';
+    return;
+  }
+
+  try {
+    const response = await fetch('https://prairiepin-production.up.railway.app/lookups', {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+      document.getElementById('lookup-count').textContent = `You’ve done ${data.count} lookup(s).`;
+    } else {
+      document.getElementById('lookup-count').textContent = `⚠️ ${data.error || 'Failed to retrieve data'}`;
+    }
+  } catch (err) {
+    console.error('Lookup fetch error:', err);
+    document.getElementById('lookup-count').textContent = '⚠️ Network error';
+  }
+});
+</script>
+
 </body>
 </html>
