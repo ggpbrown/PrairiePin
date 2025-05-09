@@ -1,41 +1,41 @@
+const express = require('express');
+const fetch = require('node-fetch');
+const cors = require('cors');
+const jwt = require('jsonwebtoken'); // ✅ Needed for token verification
 const { Pool } = require('pg');
+require('dotenv').config();
+
+const { router: authRoutes } = require('./server/auth');
+const dashboardRoutes = require('./server/dashboard');
+const lookupRoutes = require('./server/lookups');
+
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false }
 });
 
-
-const express = require('express');
-const fetch = require('node-fetch');
-const cors = require('cors');
-// const authRoutes = require('./server/auth');
-const { router: authRoutes } = require('./server/auth');
-const dashboardRoutes = require('./server/dashboard');
-const lookupRoutes = require('./server/lookups');
-
-const app = express(); // ✅ First usage of `app`
-
+const app = express();
 const PORT = process.env.PORT || 3000;
 
 const corsOptions = {
-  origin: true,
+  origin: 'https://prairiepin-auth.netlify.app',
   credentials: true
 };
 
 app.use(cors(corsOptions));
-app.use(express.json());       // For parsing JSON requests
+app.use(express.json());
 
-app.use(authRoutes);          // ⬅️ Register /register and other auth routes here
+app.use(authRoutes);
 app.use('/dashboard', dashboardRoutes);
 app.use(lookupRoutes);
 
-
+// ✅ Route to convert LLD to Lat/Long
 app.get('/convert', async (req, res) => {
-	console.log("✅ Reached /convert");
-	console.log("➡️ Authorization Header:", req.headers.authorization);
-	
-	const lld = req.query.lld;
-	const apiKey = process.env.TOWNSHIP_API_KEY;
+  console.log("✅ Reached /convert");
+  console.log("➡️ Authorization Header:", req.headers.authorization);
+
+  const lld = req.query.lld;
+  const apiKey = process.env.TOWNSHIP_API_KEY;
 
   if (!lld) {
     return res.status(400).json({ error: 'Missing LLD parameter' });
@@ -60,7 +60,7 @@ app.get('/convert', async (req, res) => {
 
     const [longitude, latitude] = pointFeature.geometry.coordinates;
 
-    // 🪵 Log to DB if authenticated
+    // 🪵 Optional: Log to DB if user is authenticated
     const authHeader = req.headers.authorization;
     if (authHeader?.startsWith('Bearer ')) {
       const token = authHeader.slice(7);
@@ -81,12 +81,8 @@ app.get('/convert', async (req, res) => {
     console.error("Fetch failed:", error);
     return res.status(500).json({ error: 'Server error. Try again later.' });
   }
-  
 });
- // ✅ THIS is where the handler should end
- 
-  console.log("➡️ /convert called");
-  
+
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
