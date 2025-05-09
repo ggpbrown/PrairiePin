@@ -2,6 +2,8 @@
 const express = require('express');
 const router = express.Router();
 const { Pool } = require('pg');
+const { authenticateToken } = require('./auth');
+
 require('dotenv').config();
 
 const pool = new Pool({
