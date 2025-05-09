@@ -1,6 +1,6 @@
 // server/auth.js
-const express = require('express');
 const bcrypt = require('bcryptjs');
+const bcrypt = require('bcryptjs'); // ✅ Make sure this matches
 const jwt = require('jsonwebtoken');
 const { Pool } = require('pg');
 require('dotenv').config();
@@ -17,7 +17,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'changeme';
 
 
 // (Optional) Register route
-rrouter.post('/register', async (req, res) => {
+router.post('/register', async (req, res) => {
   const {
     email, password,
     address_line1, address_line2, city,
