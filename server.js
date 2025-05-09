@@ -25,11 +25,6 @@ app.use(express.json());
 app.use(authRoutes);
 app.use('/dashboard', dashboardRoutes);
 
-const corsOptions = {
-  origin: 'https://prairiepin-auth.netlify.app',
-  optionsSuccessStatus: 200
-};
-
 app.use(cors(corsOptions));
 app.use(express.json());       // For parsing JSON requests
 app.use(authRoutes);          // ⬅️ Register /register and other auth routes here
