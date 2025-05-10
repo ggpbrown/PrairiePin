@@ -82,7 +82,11 @@
           errorBox.classList.remove('hidden');
         }
       } catch (err) {
-        errorBox.textContent = 'Failed to contact server';
+        errorBox.textContent = '⚠️ Session expired. Redirecting...';
+			setTimeout(() => {
+				window.location.href = '/login.html';
+				}, 2000);
+
         errorBox.classList.remove('hidden');
       }
     }
@@ -132,7 +136,11 @@
         }
       } catch (err) {
         console.error(err);
-        document.getElementById('lookup-count').textContent = '⚠️ Failed to fetch lookup data';
+        document.getElementById('lookup-count').textContent = '⚠️ Session expired. Redirecting...';
+			setTimeout(() => {
+				window.location.href = '/login.html';
+		}, 2000);
+
       }
     }
 
