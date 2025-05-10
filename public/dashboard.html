@@ -12,7 +12,11 @@
   </script>
 </head>
 <body class="bg-gray-50 min-h-screen p-6 text-gray-800">
-  <div class="max-w-xl mx-auto bg-white p-6 rounded-xl shadow-md">
+
+  <div class="max-w-xl mx-auto bg-white p-6 rounded-xl shadow-md relative">
+	  <button onclick="logout()" class="absolute top-4 right-4 text-sm text-red-600 hover:underline">
+	  Log Out
+	</button>
     <h1 class="text-2xl font-bold mb-2 text-center">PrairiePin</h1>
     <p class="text-sm text-center mb-4">Because the grid doesn't have street signs.</p>
 
@@ -145,6 +149,12 @@
     }
 
     fetchLookups();
+    <script>
+  function logout() {
+    localStorage.removeItem('token');
+    window.location.href = '/login.html';
+  }
+</script>
   </script>
 </body>
 </html>
