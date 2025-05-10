@@ -81,6 +81,8 @@
           document.getElementById('latitude').textContent = data.latitude;
           document.getElementById('longitude').textContent = data.longitude;
           resultBox.classList.remove('hidden');
+          
+          fetchLookups();  // 🔁 Refresh dashboard stats + recent lookups
         } else {
           errorBox.textContent = data.error || 'Something went wrong';
           errorBox.classList.remove('hidden');
