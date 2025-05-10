@@ -18,7 +18,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'changeme';
 
 // (Optional) Register route
 router.post('/register', async (req, res) => {
-  cconst {
+  const {
     email, password,
     first_name, last_name,
     address_line1, address_line2, city,
