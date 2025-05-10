@@ -18,8 +18,9 @@ const JWT_SECRET = process.env.JWT_SECRET || 'changeme';
 
 // (Optional) Register route
 router.post('/register', async (req, res) => {
-  const {
+  cconst {
     email, password,
+    first_name, last_name,
     address_line1, address_line2, city,
     province_state, postal_code, country
   } = req.body;
@@ -27,21 +28,21 @@ router.post('/register', async (req, res) => {
   try {
     const hash = await bcrypt.hash(password, 10);
 
-    const result = await pool.query(
-      `INSERT INTO users
-      (email, password_hash, address_line1, address_line2, city, province_state, postal_code, country)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-      RETURNING id`,
-      [email, hash, address_line1, address_line2, city, province_state, postal_code, country]
-    );
-
-    res.json({ success: true, userId: result.rows[0].id });
+	const result = await pool.query(
+	      `INSERT INTO users
+	      (email, password_hash, first_name, last_name,
+	      address_line1, address_line2, city, province_state, postal_code, country)
+	      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+	      RETURNING id`,
+	      [email, hash, first_name, last_name, address_line1, address_line2, city, province_state, postal_code, country]
+	    );
+	    
+     res.json({ success: true, userId: result.rows[0].id });
 
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Registration failed' });
-  }
-});
+  }});
 
 // Login route
 router.post('/login', async (req, res) => {
