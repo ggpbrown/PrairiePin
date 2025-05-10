@@ -116,7 +116,7 @@
           data.forEach(entry => {
             const row = document.createElement('tr');
             row.innerHTML = `
-              <td class="px-2 py-1">${entry.lld}</td>
+              <td class="px-2 py-1">${entry.lld_entered}</td>
               <td class="px-2 py-1">${entry.latitude}</td>
               <td class="px-2 py-1">${entry.longitude}</td>
               <td class="px-2 py-1">${new Date(entry.timestamp).toLocaleString()}</td>
