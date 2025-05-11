@@ -55,16 +55,17 @@
         tbody.innerHTML = '';
 
         if (Array.isArray(data)) {
-          data.forEach(user => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-			  <td><a href="/admin-user.html?id=${user.id}" class="text-blue-600 hover:underline">${user.name}</a></td>
-			  <td>${user.email}</td>
-			  <td>${user.last_login || 'Never'}</td>
-			  <td>${user.total_lookups}</td>
-			`;
-            tbody.appendChild(row);
-          });
+          users.forEach(user => {
+		  const row = document.createElement('tr');
+		  row.innerHTML = `
+		    <td class="px-2 py-1 text-blue-700 hover:underline cursor-pointer" onclick="viewUser(${user.id})">
+		      ${user.first_name} ${user.last_name}
+		    </td>
+		    <td class="px-2 py-1">${user.email}</td>
+		    <td class="px-2 py-1">${user.last_login ? new Date(user.last_login).toLocaleString() : '—'}</td>
+		  `;
+		  tbody.appendChild(row);
+		});
         } else {
           alert('Error loading user data');
         }
