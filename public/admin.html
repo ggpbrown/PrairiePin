@@ -54,7 +54,7 @@
     }
 
     const decoded = decodeJWT(token);
-    if (!decoded?.isAdmin) {
+    if (!decoded?.is_Admin) {
       alert('Unauthorized. Redirecting...');
       window.location.href = '/dashboard.html';
       return;
