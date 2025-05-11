@@ -43,27 +43,33 @@
       const errorBox = document.getElementById('login-error');
 
       try {
-        const response = await fetch('https://prairiepin-production.up.railway.app/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ email, password })
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-          localStorage.setItem('token', data.token);
-          window.location.href = 'dashboard.html';
-        } else {
-          errorBox.textContent = data.error || 'Login failed';
-        }
-      } catch (error) {
-        console.error('Login error:', error);
-        errorBox.textContent = 'Server error. Please try again later.';
-      }
-    });
+		  const response = await fetch('https://prairiepin-production.up.railway.app/login', {
+		    method: 'POST',
+		    headers: {
+		      'Content-Type': 'application/json'
+		    },
+		    body: JSON.stringify({ email, password })
+		  });
+		
+		  const data = await response.json();
+		
+		  if (response.ok) {
+		    localStorage.setItem('token', data.token);
+		    const decoded = JSON.parse(atob(data.token.split('.')[1]));
+		
+		    if (decoded.isAdmin) {
+		      window.location.href = '/admin.html';
+		    } else {
+		      window.location.href = '/dashboard.html';
+		    }
+		  } else {
+		    errorBox.textContent = data.error || 'Login failed';
+		  }
+		} catch (error) {
+		  console.error('Login error:', error);
+		  errorBox.textContent = 'Server error. Please try again later.';
+		}    
+	});
   </script>
 </body>
 </html>
