@@ -47,6 +47,13 @@ router.post('/register', async (req, res) => {
 // Login route
 
 router.post('/login', async (req, res) => {
+
+	//added May 11 2025 by GB		
+	await pool.query(
+	  'UPDATE users SET last_login = NOW() WHERE id = $1',
+	  [user.id]
+	);
+
   const { email, password } = req.body;
 
   try {
@@ -72,11 +79,6 @@ router.post('/login', async (req, res) => {
 			{ expiresIn: '8h' }
 			);	
 	
-	//added May 11 2025 by GB		
-	await pool.query(
-	  'UPDATE users SET last_login = NOW() WHERE id = $1',
-	  [user.id]
-	);
 	
     res.status(200).json({ success: true, token });
     
