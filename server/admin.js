@@ -45,9 +45,5 @@ router.get('/admin/stats', async (req, res) => {
   }
 });
 
-await pool.query(
-  'UPDATE users SET last_login = NOW() WHERE id = $1',
-  [user.id]
-);
 
 module.exports = router;
