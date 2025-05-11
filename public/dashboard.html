@@ -26,7 +26,6 @@
 
     <div class="flex gap-2 mb-4">
       <button onclick="convertLLD()" class="flex-1 bg-blue-600 text-white py-2 rounded hover:bg-blue-700">Convert</button>
-      <button onclick="trySample()" class="bg-gray-200 text-gray-700 py-2 px-4 rounded hover:bg-gray-300">Try a Sample</button>
     </div>
 
     <div id="result" class="mt-4 hidden">
@@ -97,11 +96,6 @@
 
         errorBox.classList.remove('hidden');
       }
-    }
-
-    function trySample() {
-      document.getElementById('lld').value = 'NW-4-65-19-W4';
-      convertLLD();
     }
 
     function copyToClipboard() {
