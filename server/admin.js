@@ -45,5 +45,40 @@ router.get('/admin/stats', async (req, res) => {
   }
 });
 
+router.get('/admin/users', async (req, res) => {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader?.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Missing or invalid token' });
+  }
+
+  try {
+    const token = authHeader.slice(7);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.userId;
+
+    const result = await pool.query(
+      'SELECT is_admin FROM users WHERE id = $1',
+      [userId]
+    );
+
+    if (!result.rows[0]?.is_admin) {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+
+    const users = await pool.query(`
+      SELECT id, first_name, last_name, email, last_login,
+        (SELECT COUNT(*) FROM lookups WHERE lookups.user_id = users.id) AS total_lookups
+      FROM users
+      ORDER BY last_login DESC NULLS LAST
+    `);
+
+    res.json(users.rows);
+
+  } catch (err) {
+    console.error("🔥 Error fetching admin user list:", err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 module.exports = router;
