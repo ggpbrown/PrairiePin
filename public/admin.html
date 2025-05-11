@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard | PrairiePin</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script>
+    const token = localStorage.getItem('token');
+    if (!token) {
+      window.location.href = '/login.html';
+    }
+  </script>
+</head>
+<body class="bg-gray-100 p-6 text-gray-800">
+  <div class="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-bold">Admin Dashboard</h1>
+      <button onclick="logout()" class="text-red-600 text-sm underline">Log Out</button>
+    </div>
+
+    <div id="greeting" class="text-lg font-semibold mb-4 text-blue-800"></div>
+
+    <h2 class="text-xl font-bold mb-2">Registered Users</h2>
+    <table class="min-w-full text-sm border">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="px-4 py-2 text-left">Name</th>
+          <th class="px-4 py-2 text-left">Email</th>
+          <th class="px-4 py-2 text-left">Last Login</th>
+          <th class="px-4 py-2 text-left">Lookups</th>
+        </tr>
+      </thead>
+      <tbody id="user-table-body"></tbody>
+    </table>
+  </div>
+
+  <script>
+    function logout() {
+      localStorage.removeItem('token');
+      window.location.href = '/login.html';
+    }
+
+    async function fetchUsers() {
+      const token = localStorage.getItem('token');
+      try {
+        const res = await fetch('https://prairiepin-production.up.railway.app/admin/users', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        const data = await res.json();
+        const tbody = document.getElementById('user-table-body');
+        tbody.innerHTML = '';
+
+        if (Array.isArray(data)) {
+          data.forEach(user => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td class="border px-4 py-2">${user.first_name || ''} ${user.last_name || ''}</td>
+              <td class="border px-4 py-2">${user.email}</td>
+              <td class="border px-4 py-2">${user.last_login ? new Date(user.last_login).toLocaleString() : 'Never'}</td>
+              <td class="border px-4 py-2 text-center">${user.lookup_count || 0}</td>
+            `;
+            tbody.appendChild(row);
+          });
+        } else {
+          alert('Error loading user data');
+        }
+      } catch (err) {
+        console.error('Error fetching users:', err);
+        alert('Session expired or error occurred. Redirecting.');
+        window.location.href = '/login.html';
+      }
+    }
+
+    function decodeJWT(token) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        return payload;
+      } catch (err) {
+        return null;
+      }
+    }
+
+    const decoded = decodeJWT(token);
+    if (decoded && decoded.firstName) {
+      document.getElementById('greeting').textContent = `Welcome back, ${decoded.firstName}!`;
+    }
+
+    fetchUsers();
+  </script>
+</body>
+</html>

@@ -71,8 +71,15 @@ router.post('/login', async (req, res) => {
 			JWT_SECRET,
 			{ expiresIn: '8h' }
 			);	
-
+	
+	//added May 11 2025 by GB		
+	await pool.query(
+	  'UPDATE users SET last_login = NOW() WHERE id = $1',
+	  [user.id]
+	);
+	
     res.status(200).json({ success: true, token });
+    
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Login failed' });
