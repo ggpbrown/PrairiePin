@@ -48,11 +48,7 @@ router.post('/register', async (req, res) => {
 
 router.post('/login', async (req, res) => {
 
-	//added May 11 2025 by GB		
-	await pool.query(
-	  'UPDATE users SET last_login = NOW() WHERE id = $1',
-	  [user.id]
-	);
+	
 
   const { email, password } = req.body;
 
@@ -72,7 +68,13 @@ router.post('/login', async (req, res) => {
     if (!passwordMatch) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
-
+	
+	// ✅ Track successful login time here
+	    await pool.query(
+	      'UPDATE users SET last_login = NOW() WHERE id = $1',
+	      [user.id]
+	    );
+	    
     const token = jwt.sign(
 		{ userId: user.id, email: user.email, firstName: user.first_name },
 			JWT_SECRET,
