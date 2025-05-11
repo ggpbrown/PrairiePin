@@ -68,7 +68,7 @@ router.get('/admin/users', async (req, res) => {
 
     const users = await pool.query(`
       SELECT id, first_name, last_name, email, last_login,
-        (SELECT COUNT(*) FROM lookups WHERE lookups.user_id = users.id) AS total_lookups
+        (SELECT COUNT(*) FROM lookups WHERE lookups.user_id = users.id) AS lookup_count
       FROM users
       ORDER BY last_login DESC NULLS LAST
     `);
