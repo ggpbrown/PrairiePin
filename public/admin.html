@@ -58,11 +58,11 @@
           data.forEach(user => {
             const row = document.createElement('tr');
             row.innerHTML = `
-              <td class="border px-4 py-2">${user.first_name || ''} ${user.last_name || ''}</td>
-              <td class="border px-4 py-2">${user.email}</td>
-              <td class="border px-4 py-2">${user.last_login ? new Date(user.last_login).toLocaleString() : 'Never'}</td>
-              <td class="border px-4 py-2 text-center">${user.lookup_count || 0}</td>
-            `;
+			  <td><a href="/admin-user.html?id=${user.id}" class="text-blue-600 hover:underline">${user.name}</a></td>
+			  <td>${user.email}</td>
+			  <td>${user.last_login || 'Never'}</td>
+			  <td>${user.total_lookups}</td>
+			`;
             tbody.appendChild(row);
           });
         } else {
