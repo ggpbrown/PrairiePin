@@ -36,77 +36,66 @@
   </div>
 
   <script>
-  function decodeJWT(token) {
-    try {
-      return JSON.parse(atob(token.split('.')[1]));
-    } catch (err) {
-      return null;
-    }
-  }
+  document.addEventListener('DOMContentLoaded', async () => {
+    const token = localStorage.getItem('token');
 
-  const token = localStorage.getItem('token');
-  const decoded = decodeJWT(token);
-
-  if (!decoded?.isAdmin) {
-    alert('Unauthorized. Redirecting...');
-    window.location.href = '/dashboard.html';
-  }
-  
-    function logout() {
-      localStorage.removeItem('token');
+    if (!token) {
+      alert('Not logged in. Redirecting...');
       window.location.href = '/login.html';
-    }
-
-    async function fetchUsers() {
-      const token = localStorage.getItem('token');
-      try {
-        const res = await fetch('https://prairiepin-production.up.railway.app/admin/users', {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-
-        const data = await res.json();
-        const tbody = document.getElementById('user-table-body');
-        tbody.innerHTML = '';
-
-        if (Array.isArray(data)) {
-          users.forEach(user => {
-		  const row = document.createElement('tr');
-		  row.innerHTML = `
-		    <td class="px-2 py-1 text-blue-700 hover:underline cursor-pointer" onclick="viewUser(${user.id})">
-		      ${user.first_name} ${user.last_name}
-		    </td>
-		    <td class="px-2 py-1">${user.email}</td>
-		    <td class="px-2 py-1">${user.last_login ? new Date(user.last_login).toLocaleString() : '—'}</td>
-		  `;
-		  tbody.appendChild(row);
-		});
-        } else {
-          alert('Error loading user data');
-        }
-      } catch (err) {
-        console.error('Error fetching users:', err);
-        alert('Session expired or error occurred. Redirecting.');
-        window.location.href = '/login.html';
-      }
+      return;
     }
 
     function decodeJWT(token) {
       try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        return payload;
-      } catch (err) {
+        return JSON.parse(atob(token.split('.')[1]));
+      } catch {
         return null;
       }
     }
 
     const decoded = decodeJWT(token);
-    if (decoded && decoded.firstName) {
-      document.getElementById('greeting').textContent = `Welcome back, ${decoded.firstName}!`;
+    if (!decoded?.isAdmin) {
+      alert('Unauthorized. Redirecting...');
+      window.location.href = '/dashboard.html';
+      return;
     }
 
-    fetchUsers();
-  </script>
+    // Attach logout button functionality
+    const logoutBtn = document.getElementById('logout-btn');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', () => {
+        localStorage.removeItem('token');
+        window.location.href = '/login.html';
+      });
+    }
+
+    // Fetch users
+    try {
+      const response = await fetch('https://prairiepin-production.up.railway.app/admin/users', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      const users = await response.json();
+      const tbody = document.getElementById('user-rows');
+      tbody.innerHTML = '';
+
+      users.forEach(user => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="px-2 py-1">${user.first_name || ''} ${user.last_name || ''}</td>
+          <td class="px-2 py-1">${user.email}</td>
+          <td class="px-2 py-1">${user.lookup_count || 0}</td>
+          <td class="px-2 py-1">${user.last_login ? new Date(user.last_login).toLocaleString() : 'Never'}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    } catch (err) {
+      console.error('Failed to load users:', err);
+      document.getElementById('user-rows').innerHTML = `<tr><td colspan="4">Error loading user list</td></tr>`;
+    }
+  });
+</script>
 </body>
 </html>
