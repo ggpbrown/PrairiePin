@@ -19,7 +19,8 @@
 	</button>
     <h1 class="text-2xl font-bold mb-2 text-center">PrairiePin</h1>
     <p class="text-sm text-center mb-4">Because the grid doesn't have street signs.</p>
-
+	
+	<h2 id="greeting" class="text-xl font-semibold mb-4"></h2>
     <label for="lld" class="block mb-2 font-semibold">Enter Legal Land Description</label>
     <input id="lld" type="text" class="w-full px-4 py-2 border rounded mb-4" placeholder="e.g., SW-12-34-1-W4">
 
@@ -53,6 +54,7 @@
     </div>
   </div>
 
+	
   <script>
     async function convertLLD() {
       const lld = document.getElementById('lld').value.trim();
@@ -160,5 +162,23 @@
     window.location.href = '/login.html';
   }
 </script>
+
+<script>
+	  function decodeJWT(token) {
+	    try {
+	      const payload = JSON.parse(atob(token.split('.')[1]));
+	      return payload;
+	    } catch (err) {
+	      return null;
+	    }
+	  }
+	
+	  const token = localStorage.getItem('token');
+	  const decoded = decodeJWT(token);
+	  if (decoded && decoded.firstName) {
+	    document.getElementById('greeting').textContent = `Welcome back, ${decoded.firstName}!`;
+	  }
+	</script>
+
 </body>
 </html>
