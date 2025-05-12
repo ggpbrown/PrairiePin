@@ -56,49 +56,56 @@
     }
 
     async function fetchUsers() {
-      const tbody = document.getElementById('user-table-body');
-      const errorBox = document.getElementById('admin-error');
+  const token = localStorage.getItem('token');
+  if (!token) {
+    window.location.href = '/login.html';
+    return;
+  }
 
-      if (!tbody) {
-        console.error("🚨 Could not find user-table-body in DOM");
-        return;
-      }
+  try {
+    const response = await fetch('https://prairiepin-production.up.railway.app/admin/users', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
 
-      try {
-        const response = await fetch('https://prairiepin-production.up.railway.app/admin/users', {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-
-        const data = await response.json();
-
-        if (!Array.isArray(data)) {
-          errorBox.textContent = '⚠️ Error loading user data.';
-          errorBox.classList.remove('hidden');
-          return;
-        }
-
-        tbody.innerHTML = '';
-
-        data.forEach(user => {
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td class="px-3 py-2">${user.first_name} ${user.last_name}</td>
-            <td class="px-3 py-2">${user.email}</td>
-            <td class="px-3 py-2">${user.last_login ? new Date(user.last_login).toLocaleString() : 'Never'}</td>
-            <td class="px-3 py-2 text-center">${user.lookup_count}</td>
-          `;
-          tbody.appendChild(row);
-        });
-
-      } catch (err) {
-        console.error("❌ Failed to fetch users:", err);
-        errorBox.textContent = '⚠️ Error loading user data. Please try again later.';
-        errorBox.classList.remove('hidden');
+    if (!response.ok) {
+      if (response.status === 401 || response.status === 403) {
+        alert('Session expired or unauthorized. Redirecting to login...');
+        localStorage.removeItem('token');
+        window.location.href = '/login.html';
+      } else {
+        throw new Error('Failed to fetch');
       }
     }
 
+    const users = await response.json();
+
+    const tbody = document.getElementById('user-table-body');
+    tbody.innerHTML = '';
+
+    users.forEach(user => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td class="px-3 py-2">${user.first_name} ${user.last_name}</td>
+        <td class="px-3 py-2 text-center">${user.last_login ? new Date(user.last_login).toLocaleString() : '—'}</td>
+        <td class="px-3 py-2 text-center">${user.total_lookups ?? 0}</td>
+        <td class="px-3 py-2 text-center">
+          <a href="/admin-user.html?id=${user.id}" class="text-blue-600 hover:underline">View</a>
+        </td>
+      `;
+      tbody.appendChild(row);
+    });
+
+  } catch (error) {
+    console.error('❌ Failed to fetch users:', error);
+    const message = document.createElement('p');
+    message.textContent = '⚠️ Error loading user data. Redirecting to login...';
+    document.querySelector('.max-w-3xl').appendChild(message);
+
+    setTimeout(() => {
+      window.location.href = '/login.html';
+    }, 2000);
+  }
+}
     fetchUsers();
   </script>
 
