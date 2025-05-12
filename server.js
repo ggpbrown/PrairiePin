@@ -68,6 +68,7 @@ app.get('/convert', async (req, res) => {
     }
 
     const [longitude, latitude] = pointFeature.geometry.coordinates;
+	const province = pointFeature.properties?.province || 'Unknown';
 
     // 🔐 Optionally log lookup if authenticated
     const authHeader = req.headers.authorization;
@@ -79,10 +80,10 @@ app.get('/convert', async (req, res) => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         console.log("🧪 Token verified for user:", decoded.userId);
 
-        const insertResult = await pool.query(
-          'INSERT INTO lookups (user_id, lld_entered, latitude, longitude) VALUES ($1, $2, $3, $4) RETURNING id',
-          [decoded.userId, lld, latitude, longitude]
-        );
+        await pool.query(
+		  'INSERT INTO lookups (user_id, lld_entered, latitude, longitude, province) VALUES ($1, $2, $3, $4, $5)',
+		  [decoded.userId, lld, latitude, longitude, province]
+		);
 
         console.log("✅ DB insert complete with ID:", insertResult.rows[0].id);
       } catch (err) {
