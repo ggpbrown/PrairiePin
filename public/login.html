@@ -57,12 +57,9 @@
 		    localStorage.setItem('token', data.token);
 		    const decoded = JSON.parse(atob(data.token.split('.')[1]));
 		
-		    if (decoded.isAdmin) {
-		      window.location.href = '/admin.html';
-		    } else {
-		      window.location.href = '/dashboard.html';
-		    }
-		  } else {
+		    window.location.href = '/dashboard.html';
+		    
+		    	} else {
 		    errorBox.textContent = data.error || 'Login failed';
 		  }
 		} catch (error) {
