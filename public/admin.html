@@ -88,13 +88,12 @@
     users.forEach(user => {
       const row = document.createElement('tr');
       row.innerHTML = `
-        <td class="px-3 py-2">${user.first_name} ${user.last_name}</td>
-        <td class="px-3 py-2 text-center">${user.last_login ? new Date(user.last_login).toLocaleString() : '—'}</td>
-        <td class="px-3 py-2 text-center">${user.total_lookups ?? 0}</td>
-        <td class="px-3 py-2 text-center">
-          <a href="/admin-user.html?id=${user.id}" class="text-blue-600 hover:underline">View</a>
-        </td>
-      `;
+		  <td class="px-3 py-2">${user.first_name} ${user.last_name}</td>
+		  <td class="px-3 py-2">${user.email}</td>
+		  <td class="px-3 py-2">${user.last_login ? new Date(user.last_login).toLocaleString() : '—'}</td>
+		  <td class="px-3 py-2 text-center">${user.lookup_count}</td>
+		  <td class="px-3 py-2 text-blue-600 underline cursor-pointer">View</td>
+		`;
       tbody.appendChild(row);
     });
 
