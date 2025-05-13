@@ -62,7 +62,7 @@
     </div>
   </div>
 
-	
+  
   <script>
     async function convertLLD() {
       const lld = document.getElementById('lld').value.trim();
@@ -166,7 +166,7 @@
   }
 </script>
 
-<script>
+	<script>
 	  function decodeJWT(token) {
 	    try {
 	      const payload = JSON.parse(atob(token.split('.')[1]));
@@ -180,6 +180,19 @@
 	  const decoded = decodeJWT(token);
 	  if (decoded && decoded.firstName) {
 	    document.getElementById('greeting').textContent = `Welcome back, ${decoded.firstName}!`;
+	  }
+	</script>
+	
+	<script>
+	  const token = localStorage.getItem('token');
+	  const decoded = token ? JSON.parse(atob(token.split('.')[1])) : null;
+	
+	  if (decoded?.isAdmin) {
+	    const link = document.createElement('a');
+	    link.href = '/admin.html';
+	    link.textContent = 'Admin Tools';
+	    link.className = 'text-sm text-blue-600 underline absolute top-4 right-4';
+	    document.body.appendChild(link);
 	  }
 	</script>
 
