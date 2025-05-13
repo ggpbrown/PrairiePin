@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>View/Edit User | PrairiePin</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen p-6">
+  <div class="max-w-2xl mx-auto bg-white p-6 rounded-xl shadow-md">
+    <button onclick="window.location.href='/admin.html'" class="text-sm text-blue-600 hover:underline mb-4">← Back to Admin Dashboard</button>
+    <h1 class="text-2xl font-bold mb-4">View/Edit User</h1>
+
+    <form id="user-form" class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium">First Name</label>
+        <input id="first_name" type="text" class="w-full border px-3 py-2 rounded" />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium">Last Name</label>
+        <input id="last_name" type="text" class="w-full border px-3 py-2 rounded" />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium">Email</label>
+        <input id="email" type="email" class="w-full border px-3 py-2 rounded" />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium">City</label>
+        <input id="city" type="text" class="w-full border px-3 py-2 rounded" />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium">Province/State</label>
+        <input id="province_state" type="text" class="w-full border px-3 py-2 rounded" />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium">Is Admin</label>
+        <input id="is_admin" type="checkbox" class="mt-1" />
+      </div>
+
+      <div class="flex justify-end gap-2">
+        <button type="button" onclick="saveUser()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Save</button>
+        <button type="button" onclick="window.location.href='/admin.html'" class="bg-gray-300 text-gray-700 px-4 py-2 rounded">Cancel</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get('id');
+    const token = localStorage.getItem('token');
+
+    if (!userId || !token) {
+      alert("Missing user ID or session.");
+      window.location.href = '/login.html';
+    }
+
+    async function loadUser() {
+      const response = await fetch(`https://prairiepin-production.up.railway.app/admin/user/${userId}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      if (!response.ok) {
+        alert("Failed to load user.");
+        window.location.href = '/admin.html';
+        return;
+      }
+
+      const user = await response.json();
+
+      // Populate fields
+      document.getElementById('first_name').value = user.first_name || '';
+      document.getElementById('last_name').value = user.last_name || '';
+      document.getElementById('email').value = user.email || '';
+      document.getElementById('city').value = user.city || '';
+      document.getElementById('province_state').value = user.province_state || '';
+      document.getElementById('is_admin').checked = user.is_admin || false;
+    }
+
+    async function saveUser() {
+      const updatedUser = {
+        first_name: document.getElementById('first_name').value,
+        last_name: document.getElementById('last_name').value,
+        email: document.getElementById('email').value,
+        city: document.getElementById('city').value,
+        province_state: document.getElementById('province_state').value,
+        is_admin: document.getElementById('is_admin').checked
+      };
+
+      const response = await fetch(`https://prairiepin-production.up.railway.app/admin/user/${userId}`, {
+        method: 'PUT', // You’ll need to add a corresponding PUT route to your backend
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(updatedUser)
+      });
+
+      if (response.ok) {
+        alert("User updated successfully.");
+        window.location.href = '/admin.html';
+      } else {
+        alert("Failed to save changes.");
+      }
+    }
+
+    loadUser();
+  </script>
+</body>
+</html>
