@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Lookups | PrairiePin</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-6 min-h-screen">
+  <div class="max-w-5xl mx-auto bg-white p-6 rounded-xl shadow-md">
+    <div class="flex justify-between items-center mb-4">
+      <h1 class="text-2xl font-bold">User Lookups</h1>
+      <a href="/admin.html" class="text-blue-600 underline">← Back to Admin Dashboard</a>
+    </div>
+
+    <div id="user-info" class="mb-4 text-gray-700"></div>
+
+    <table class="w-full text-sm border">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="px-3 py-2 text-left">LLD</th>
+          <th class="px-3 py-2 text-left">Province</th>
+          <th class="px-3 py-2 text-left">Latitude</th>
+          <th class="px-3 py-2 text-left">Longitude</th>
+          <th class="px-3 py-2 text-left">Date/Time</th>
+        </tr>
+      </thead>
+      <tbody id="lookup-table-body"></tbody>
+    </table>
+
+    <div class="mt-4">
+      <a id="edit-user-link" class="text-blue-600 underline">Edit User Details</a>
+    </div>
+  </div>
+
+  <script>
+    const token = localStorage.getItem('token');
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get('id');
+
+    if (!token || !userId) {
+      window.location.href = '/login.html';
+    }
+
+    async function loadUserLookups() {
+      const [userRes, lookupsRes] = await Promise.all([
+        fetch(`https://prairiepin-production.up.railway.app/admin/user/${userId}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        }),
+        fetch(`https://prairiepin-production.up.railway.app/admin/user/${userId}/lookups`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        })
+      ]);
+
+      const user = await userRes.json();
+      const lookups = await lookupsRes.json();
+
+      document.getElementById('user-info').textContent = `${user.first_name} ${user.last_name} (${user.email})`;
+      document.getElementById('edit-user-link').href = `/admin-user.html?id=${userId}`;
+
+      const tbody = document.getElementById('lookup-table-body');
+      tbody.innerHTML = '';
+
+      lookups.forEach(l => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td class="px-3 py-2">${l.lld_entered}</td>
+          <td class="px-3 py-2">${l.province}</td>
+          <td class="px-3 py-2">${l.latitude}</td>
+          <td class="px-3 py-2">${l.longitude}</td>
+          <td class="px-3 py-2">${new Date(l.created_at).toLocaleString()}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    loadUserLookups();
+  </script>
+</body>
+</html>

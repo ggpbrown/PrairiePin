@@ -124,6 +124,42 @@ router.get('/admin/user/:id', async (req, res) => {
   }
 });
 
+router.get('/admin/user/:id/lookups', async (req, res) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader?.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Missing or invalid token' });
+  }
+
+  try {
+    const token = authHeader.slice(7);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const adminCheck = await pool.query(
+      'SELECT is_admin FROM users WHERE id = $1',
+      [decoded.userId]
+    );
+
+    if (!adminCheck.rows[0]?.is_admin) {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+
+    const userId = req.params.id;
+
+    const result = await pool.query(
+      `SELECT lld_entered, latitude, longitude, province, created_at
+       FROM lookups
+       WHERE user_id = $1
+       ORDER BY created_at DESC`,
+      [userId]
+    );
+
+    res.json(result.rows);
+  } catch (err) {
+    console.error("🔥 Error fetching user lookups:", err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // PUT /admin/user/:id - Update user details
 router.put('/admin/user/:id', async (req, res) => {
   const authHeader = req.headers.authorization;
