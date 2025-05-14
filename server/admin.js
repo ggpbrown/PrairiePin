@@ -149,7 +149,7 @@ router.get('/admin/user/:id/lookups', async (req, res) => {
       `SELECT lld_entered, latitude, longitude, province, timestamp
        FROM lookups
        WHERE user_id = $1
-       ORDER BY created_at DESC`,
+       ORDER BY timestamp DESC`,
       [userId]
     );
 
