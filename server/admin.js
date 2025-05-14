@@ -146,7 +146,7 @@ router.get('/admin/user/:id/lookups', async (req, res) => {
     const userId = req.params.id;
 
     const result = await pool.query(
-      `SELECT lld_entered, latitude, longitude, province, created_at
+      `SELECT lld_entered, latitude, longitude, province, timestamp
        FROM lookups
        WHERE user_id = $1
        ORDER BY created_at DESC`,
