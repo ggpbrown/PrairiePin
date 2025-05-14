@@ -80,12 +80,15 @@ app.get('/convert', async (req, res) => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         console.log("🧪 Token verified for user:", decoded.userId);
 
-        await pool.query(
-		  'INSERT INTO lookups (user_id, lld_entered, latitude, longitude, province) VALUES ($1, $2, $3, $4, $5)',
+        const insertResult = await pool.query(
+		  `INSERT INTO lookups (user_id, lld_entered, latitude, longitude, province)
+		   VALUES ($1, $2, $3, $4, $5)
+		   RETURNING id`,
 		  [decoded.userId, lld, latitude, longitude, province]
 		);
-
-        console.log("✅ DB insert complete with ID:", insertResult.rows[0].id);
+		
+		console.log("✅ DB insert complete with ID:", insertResult.rows[0].id);  
+		      
       } catch (err) {
         console.warn("🔐 Invalid or missing token; skipping log.");
         console.error(err);
@@ -93,8 +96,8 @@ app.get('/convert', async (req, res) => {
     } else {
       console.warn("❌ Missing or invalid Authorization header — skipping insert");
     }
-
-    return res.json({ latitude, longitude });
+    
+	return res.json({ latitude, longitude, province });
 
   } catch (error) {
     console.error("🔥 Fetch failed:", error);
