@@ -3,7 +3,6 @@ const express = require('express');
 const router = express.Router();
 const { Pool } = require('pg');
 const jwt = require('jsonwebtoken');
-const { sendAccountUpdateEmail } = require('./utils/email'); // ✅ Move here
 require('dotenv').config();
 
 const pool = new Pool({
@@ -204,12 +203,8 @@ router.put('/admin/user/:id', async (req, res) => {
        WHERE id = $7`,
       [first_name, last_name, email, city, province_state, is_admin, userId]
     );
-
-	// Inside your route handler, after user update is successful:
-	await sendAccountUpdateEmail(email, first_name);
-
+	
     res.json({ message: 'User updated successfully' });
-    
   } catch (err) {
     console.error("🔥 Error updating user:", err);
     res.status(500).json({ error: 'Internal server error' });
