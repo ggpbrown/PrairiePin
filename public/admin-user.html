@@ -91,7 +91,7 @@
       };
 
       const response = await fetch(`https://prairiepin-production.up.railway.app/admin/user/${userId}`, {
-        method: 'PUT', // You’ll need to add a corresponding PUT route to your backend
+        method: 'POST', // You’ll need to add a corresponding PUT route to your backend
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
