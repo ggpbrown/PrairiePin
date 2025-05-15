@@ -33,7 +33,7 @@ app.use(express.json());
 app.use(authRoutes);
 app.use('/dashboard', dashboardRoutes);
 app.use(lookupRoutes);
-app.use(adminRoutes);
+app.use('/admin', adminRoutes); // ← Add '/admin' if it's not already there
 
 // 📍 Route: Convert LLD to Lat/Long
 app.get('/convert', async (req, res) => {
