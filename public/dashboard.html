@@ -8,7 +8,9 @@
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body class="bg-gray-100 min-h-screen p-6">
-
+	<button onclick="logout()" class="absolute top-4 right-4 text-sm text-red-600 hover:underline">
+  Log Out
+</button>
   <!-- Header Banner -->
   <div class="w-full py-4 shadow-sm mb-6" style="background-color: #F1FDF4">
     <div class="max-w-4xl mx-auto text-center">
@@ -104,7 +106,7 @@
         .then(data => {
           const tbody = document.getElementById('lookup-table-body');
           tbody.innerHTML = '';
-          const last10 = data.slice(0, 10);
+          const last10 = data.lookups?.slice(0, 10) || [];
           last10.forEach((lookup, index) => {
             const row = document.createElement('tr');
             row.className = index % 2 === 0 ? 'bg-white' : 'bg-[#F1FDF4]';
@@ -131,4 +133,10 @@
     fetchLookups();
   </script>
 </body>
+<script>
+  function logout() {
+    localStorage.removeItem('token');
+    window.location.href = '/login.html';
+  }
+</script>
 </html>
