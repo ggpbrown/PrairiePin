@@ -1,4 +1,16 @@
 <!DOCTYPE html>
+<script>
+	const decoded = token ? JSON.parse(atob(token.split('.')[1])) : null;
+	
+	if (decoded?.isAdmin) {
+	  const link = document.createElement('a');
+	  link.href = '/admin.html';
+	  link.textContent = 'Admin Tools';
+	  link.className = 'text-sm text-blue-600 underline absolute top-4 right-24';
+	  document.body.appendChild(link);
+	}
+</script>
+
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -104,6 +116,7 @@
       })
         .then(res => res.json())
         .then(data => {
+	        console.log("🔍 Lookup data received:", data);
           const tbody = document.getElementById('lookup-table-body');
           tbody.innerHTML = '';
           const last10 = data.lookups?.slice(0, 10) || [];
@@ -120,7 +133,7 @@
             tbody.appendChild(row);
           });
         });
-        console.log("🔍 Lookup data received:", data);
+        
     }
 
     function copyCoordinates() {
