@@ -3,8 +3,6 @@
 
 <html lang="en">
 
-
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -57,16 +55,7 @@
     </div>
   </div>
 
-  <script>
-	  	const decoded = token ? JSON.parse(atob(token.split('.')[1])) : null;
-	
-	if (decoded?.isAdmin) {
-	  const link = document.createElement('a');
-	  link.href = '/admin.html';
-	  link.textContent = 'Admin Tools';
-	  link.className = 'text-sm text-blue-600 underline absolute top-4 right-24';
-	  document.body.appendChild(link);
-	}
+
   <script>
     function convertLLD() {
       const lld = document.getElementById('lld').value.trim();
@@ -149,7 +138,18 @@
 
     fetchLookups();
   </script>
+  <script>
+	  const decoded = token ? JSON.parse(atob(token.split('.')[1])) : null;
+	
+	if (decoded?.isAdmin) {
+	  const link = document.createElement('a');
+	  link.href = '/admin.html';
+	  link.textContent = 'Admin Tools';
+	  link.className = 'text-sm text-blue-600 underline absolute top-4 right-24';
+	  document.body.appendChild(link);
+	}
 </body>
+
 <script>
   function logout() {
     localStorage.removeItem('token');
