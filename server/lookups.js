@@ -19,7 +19,7 @@ router.get('/lookups', authenticateToken, async (req, res) => {
 
   try {
     const result = await pool.query(`
-	  SELECT id, user_id, lld_entered, latitude, longitude, timestamp
+	  SELECT id, user_id, lld_entered, province, latitude, longitude, timestamp
 	  FROM lookups
 	  WHERE user_id = $1
 	  ORDER BY timestamp DESC
