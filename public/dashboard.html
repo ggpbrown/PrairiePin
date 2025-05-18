@@ -108,24 +108,26 @@
       })
         .then(res => res.json())
         .then(data => {
-	        console.log("🔍 Lookup data received:", data);
-          const tbody = document.getElementById('lookup-table-body');
-          tbody.innerHTML = '';
-          const last10 = data.lookups?.slice(0, 10) || [];
-          last10.forEach((lookup, index) => {
-            const row = document.createElement('tr');
-            row.className = index % 2 === 0 ? 'bg-white' : 'bg-[#F1FDF4]';
-            row.innerHTML = `
-              <td class="px-3 py-2">${new Date(lookup.timestamp).toLocaleString()}</td>
-              <td class="px-3 py-2">${lookup.lld_entered}</td>
-              <td class="px-3 py-2">${lookup.province || '—'}</td>
-              <td class="px-3 py-2">${lookup.latitude}</td>
-              <td class="px-3 py-2">${lookup.longitude}</td>
-            `;
-            tbody.appendChild(row);
-          });
-        });
-        
+		  console.log("🔍 Lookup data received:", data);
+		
+		  const tbody = document.getElementById('lookup-table-body');
+		  tbody.innerHTML = '';
+		
+		  const last10 = Array.isArray(data) ? data.slice(0, 10) : [];
+		
+		  last10.forEach((lookup, index) => {
+		    const row = document.createElement('tr');
+		    row.className = index % 2 === 0 ? 'bg-white' : 'bg-[#F1FDF4]';
+		    row.innerHTML = `
+		      <td class="px-3 py-2">${new Date(lookup.timestamp).toLocaleString()}</td>
+		      <td class="px-3 py-2">${lookup.lld_entered}</td>
+		      <td class="px-3 py-2">${lookup.province || '—'}</td>
+		      <td class="px-3 py-2">${lookup.latitude}</td>
+		      <td class="px-3 py-2">${lookup.longitude}</td>
+		    `;
+		    tbody.appendChild(row);
+		  });
+		})        
     }
 
     function copyCoordinates() {
