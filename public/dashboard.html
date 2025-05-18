@@ -140,18 +140,6 @@
   </script>
   
   <script>
-	  const decoded = token ? JSON.parse(atob(token.split('.')[1])) : null;
-	
-	if (decoded?.isAdmin) {
-	  const link = document.createElement('a');
-	  link.href = '/admin.html';
-	  link.textContent = 'Admin Tools';
-	  link.className = 'text-sm text-blue-600 underline absolute top-4 right-24';
-	  document.body.appendChild(link);
-	}
-	</script>
-	
-	<script>
   
   function decodeJWT(token) {
     try {
