@@ -103,7 +103,7 @@
       const token = localStorage.getItem('token');
       if (!token) return;
 
-      fetch('https://prairiepin-production.up.railway.app/dashboard/lookups', {
+      fetch('https://prairiepin-production.up.railway.app/lookups', {
         headers: { 'Authorization': `Bearer ${token}` }
       })
         .then(res => res.json())
