@@ -117,7 +117,7 @@
 		
 		  last10.forEach((lookup, index) => {
 		    const row = document.createElement('tr');
-		    row.className = index % 2 === 0 ? 'bg-white' : 'bg-[#F1FDF4]';
+		    row.className = index % 2 === 0 ? 'bg-white' : 'bg-green-50';
 		    row.innerHTML = `
 		      <td class="px-3 py-2">${new Date(lookup.timestamp).toLocaleString()}</td>
 		      <td class="px-3 py-2">${lookup.lld_entered}</td>
