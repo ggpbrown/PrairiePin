@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
-const { pool } = require('../db'); // Adjust if your DB import differs
+const { pool } = require('./db'); // Adjust if your DB import differs
+
 
 // ... Add /me and /me update routes here ...
 
