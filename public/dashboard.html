@@ -7,7 +7,7 @@
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
 </head>
 <body class="bg-gray-100 font-sans">
-  <div class="bg-[#F1FDF4] p-4 shadow relative">
+  <div class="bg-green-50 p-4 shadow relative">
     <div class="absolute top-4 right-6 flex space-x-4 text-sm">
       <a href="/user-profile.html" class="text-blue-600 underline">Update Profile</a>
       <a id="admin-link" href="/admin.html" class="text-blue-600 underline hidden">Admin Tools</a>
@@ -39,37 +39,47 @@
       window.location.href = '/login.html';
     }
 
-    function convertLLD() {
-      const lld = document.getElementById('lld').value.trim();
-      const resultBox = document.getElementById('result');
-      resultBox.value = '';
-
-      if (!lld) {
-        resultBox.value = 'Please enter a legal land description.';
-        return;
-      }
-
-      fetch('https://prairiepin-production.up.railway.app/convert', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify({ lld })
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (data.latitude && data.longitude) {
-            resultBox.value = `Latitude: ${data.latitude}\nLongitude: ${data.longitude}`;
-          } else {
-            resultBox.value = data.error || 'Conversion failed.';
-          }
-        })
-        .catch(() => {
-          resultBox.value = 'An error occurred during conversion.';
-        });
-    }
-
+    async function convertLLD() {
+	  const lld = document.getElementById('lld').value.trim();
+	  const token = localStorage.getItem('token');
+	
+	  if (!token) {
+	    window.location.href = '/login.html';
+	    return;
+	  }
+	
+	  const resultBox = document.getElementById('result');
+	  const errorBox = document.getElementById('error');
+	
+	  resultBox.classList.add('hidden');
+	  errorBox.classList.add('hidden');
+	
+	  try {
+	    const res = await fetch(`https://prairiepin-production.up.railway.app/convert?lld=${encodeURIComponent(lld)}`, {
+	      headers: {
+	        'Authorization': `Bearer ${token}`
+	      }
+	    });
+	
+	    const data = await res.json();
+	    if (res.ok) {
+	      document.getElementById('latitude').textContent = data.latitude;
+	      document.getElementById('longitude').textContent = data.longitude;
+	      resultBox.classList.remove('hidden');
+	
+	      fetchLookups();  // Refresh dashboard stats
+	    } else {
+	      errorBox.textContent = data.error || 'Something went wrong';
+	      errorBox.classList.remove('hidden');
+	    }
+	  } catch (err) {
+	    errorBox.textContent = '⚠️ Session expired. Redirecting...';
+	    setTimeout(() => {
+	      window.location.href = '/login.html';
+	    }, 2000);
+	    errorBox.classList.remove('hidden');
+	  }
+	}
     function copyCoordinates() {
       const text = document.getElementById('result').value;
       if (text) {
