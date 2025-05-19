@@ -1,197 +1,103 @@
 <!DOCTYPE html>
-
-
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PrairiePin | Dashboard</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PrairiePin Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
 </head>
-<body class="bg-gray-100 min-h-screen p-6">
-	<div class="absolute top-4 right-4 flex gap-x-4 text-sm">
-	  <a href="/user-profile.html" class="text-blue-600 hover:underline">Update Profile</a>
-	  <button onclick="logout()" class="text-red-600 hover:underline">Log Out</button>
-	</div>
-  <!-- Header Banner -->
-  <div class="w-full py-4 shadow-sm mb-6" style="background-color: #F1FDF4">
-    <div class="max-w-4xl mx-auto text-center">
-      <h1 class="text-3xl font-bold" style="color: #085e46">PrairiePin</h1>
-      <p class="text-sm" style="color: #8cc084">Because the grid doesn't have street signs.</p>
+<body class="bg-gray-100 font-sans">
+  <div class="bg-[#F1FDF4] p-4 shadow relative">
+    <div class="absolute top-4 right-6 flex space-x-4 text-sm">
+      <a href="/user-profile.html" class="text-blue-600 underline">Update Profile</a>
+      <a id="admin-link" href="/admin.html" class="text-blue-600 underline hidden">Admin Tools</a>
+      <a href="#" onclick="logout()" class="text-red-600 underline">Log Out</a>
     </div>
+    <h1 class="text-3xl font-bold text-green-900 text-center">PrairiePin</h1>
+    <p class="text-green-700 text-center text-sm">Because the grid doesn't have street signs.</p>
   </div>
 
-  <div class="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow-md">
-  
+  <main class="p-6 max-w-4xl mx-auto">
+    <h2 id="greeting" class="text-lg font-semibold text-green-900 mb-4"></h2>
+
     <div class="mb-6">
-      <h2 id="greeting" class="text-xl font-semibold text-center text-green-900 mb-1"></h2>
       <label for="lld" class="block text-sm font-medium text-gray-700">Enter Legal Land Description (LLD)</label>
       <input type="text" id="lld" name="lld" class="mt-1 block w-full border border-gray-300 rounded-md p-2" placeholder="e.g. SW-24-38-20-W5" />
       <button onclick="convertLLD()" class="mt-3 bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded">Convert</button>
     </div>
 
-    <div id="error" class="text-red-600 mb-4 hidden"></div>
-
-    <div id="result" class="bg-gray-50 p-4 rounded mb-6 hidden">
-      <p><strong>Latitude:</strong> <span id="latitude"></span></p>
-      <p><strong>Longitude:</strong> <span id="longitude"></span></p>
-      <a id="map-link" class="block mt-2 text-blue-600 underline" target="_blank">View on Google Maps</a>
-      <button onclick="copyCoordinates()" class="mt-2 bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm">Copy Coordinates</button>
+    <div class="mb-6">
+      <label for="result" class="block text-sm font-medium text-gray-700">Result</label>
+      <textarea id="result" class="mt-1 block w-full border border-gray-300 rounded-md p-2" rows="3" readonly></textarea>
+      <button onclick="copyCoordinates()" class="mt-3 bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded">Copy Coordinates</button>
     </div>
-
-    <h2 class="text-xl font-semibold mb-2">Last 10 Lookups</h2>
-    <div class="overflow-x-auto">
-      <table class="w-full text-sm border border-gray-200">
-        <thead class="bg-gray-100">
-          <tr>
-            <th class="px-3 py-2 text-left">Date</th>
-            <th class="px-3 py-2 text-left">LLD Entered</th>
-            <th class="px-3 py-2 text-left">Province</th>
-            <th class="px-3 py-2 text-left">Latitude</th>
-            <th class="px-3 py-2 text-left">Longitude</th>
-          </tr>
-        </thead>
-        <tbody id="lookup-table-body"></tbody>
-      </table>
-    </div>
-  </div>
-
+  </main>
 
   <script>
+    function logout() {
+      localStorage.removeItem('token');
+      window.location.href = '/login.html';
+    }
+
     function convertLLD() {
       const lld = document.getElementById('lld').value.trim();
-      const token = localStorage.getItem('token');
+      const resultBox = document.getElementById('result');
+      resultBox.value = '';
 
-      if (!token) {
-        window.location.href = '/login.html';
+      if (!lld) {
+        resultBox.value = 'Please enter a legal land description.';
         return;
       }
 
-      const resultBox = document.getElementById('result');
-      const errorBox = document.getElementById('error');
-
-      resultBox.classList.add('hidden');
-      errorBox.classList.add('hidden');
-
-      fetch(`https://prairiepin-production.up.railway.app/convert?lld=${encodeURIComponent(lld)}`, {
+      fetch('https://prairiepin-production.up.railway.app/convert', {
+        method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      })
-        .then(res => res.json().then(data => ({ status: res.status, body: data })))
-        .then(({ status, body }) => {
-          if (status === 200) {
-            document.getElementById('latitude').textContent = body.latitude;
-            document.getElementById('longitude').textContent = body.longitude;
-            document.getElementById('map-link').href = `https://maps.google.com/?q=${body.latitude},${body.longitude}`;
-            resultBox.classList.remove('hidden');
-            fetchLookups();
-          } else {
-            errorBox.textContent = body.error || 'Something went wrong';
-            errorBox.classList.remove('hidden');
-          }
-        })
-        .catch(() => {
-          errorBox.textContent = '⚠️ Session expired. Redirecting...';
-          setTimeout(() => {
-            window.location.href = '/login.html';
-          }, 2000);
-          errorBox.classList.remove('hidden');
-        });
-    }
-
-    function fetchLookups() {
-      const token = localStorage.getItem('token');
-      if (!token) return;
-
-      fetch('https://prairiepin-production.up.railway.app/lookups', {
-        headers: { 'Authorization': `Bearer ${token}` }
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({ lld })
       })
         .then(res => res.json())
         .then(data => {
-		  console.log("🔍 Lookup data received:", data);
-		
-		  const tbody = document.getElementById('lookup-table-body');
-		  tbody.innerHTML = '';
-		
-		  const last10 = Array.isArray(data) ? data.slice(0, 10) : [];
-		
-		  last10.forEach((lookup, index) => {
-		    const row = document.createElement('tr');
-		    row.className = index % 2 === 0 ? 'bg-white' : 'bg-green-50';
-		    row.innerHTML = `
-		      <td class="px-3 py-2">${new Date(lookup.timestamp).toLocaleString()}</td>
-		      <td class="px-3 py-2">${lookup.lld_entered}</td>
-		      <td class="px-3 py-2">${lookup.province || '—'}</td>
-		      <td class="px-3 py-2">${lookup.latitude}</td>
-		      <td class="px-3 py-2">${lookup.longitude}</td>
-		    `;
-		    tbody.appendChild(row);
-		  });
-		})        
+          if (data.latitude && data.longitude) {
+            resultBox.value = `Latitude: ${data.latitude}\nLongitude: ${data.longitude}`;
+          } else {
+            resultBox.value = data.error || 'Conversion failed.';
+          }
+        })
+        .catch(() => {
+          resultBox.value = 'An error occurred during conversion.';
+        });
     }
 
     function copyCoordinates() {
-      const lat = document.getElementById('latitude').textContent;
-      const lng = document.getElementById('longitude').textContent;
-      navigator.clipboard.writeText(`${lat}, ${lng}`)
-        .then(() => alert('Coordinates copied to clipboard!'))
-        .catch(() => alert('Failed to copy coordinates.'));
+      const text = document.getElementById('result').value;
+      if (text) {
+        navigator.clipboard.writeText(text).then(() => {
+          alert('Coordinates copied to clipboard!');
+        });
+      }
     }
 
-    fetchLookups();
+    function decodeJWT(token) {
+      try {
+        return JSON.parse(atob(token.split('.')[1]));
+      } catch {
+        return null;
+      }
+    }
+
+    const token = localStorage.getItem('token');
+    const decoded = decodeJWT(token);
+
+    if (decoded) {
+      const greeting = document.getElementById('greeting');
+      greeting.textContent = `Welcome back, ${decoded.first_name}!`;
+    }
+
+    if (decoded?.isAdmin) {
+      document.getElementById('admin-link').classList.remove('hidden');
+    }
   </script>
-  
-  <script>
-  function decodeJWT(token) {
-    try {
-      return JSON.parse(atob(token.split('.')[1]));
-    } catch {
-      return null;
-    }
-  }
-
-  const token = localStorage.getItem('token');
-  const decoded = decodeJWT(token);
-
-  // 👋 Greeting message
-  if (decoded?.firstName) {
-    const greetingEl = document.getElementById('greeting');
-    if (greetingEl) {
-      greetingEl.textContent = `Welcome back, ${decoded.firstName}!`;
-    }
-  }
-
-  // 🛠️ Admin Tools link
-  if (decoded?.isAdmin) {
-    const adminLink = document.createElement('a');
-    adminLink.href = '/admin.html';
-    adminLink.textContent = 'Admin Tools';
-    adminLink.className = 'text-sm text-blue-600 underline absolute top-4 right-32';
-    document.body.appendChild(adminLink);
-  }
-
-  // 🙋‍♂️ Update Profile link
-  const profileLink = document.createElement('a');
-  profileLink.href = '/user-profile.html';
-  profileLink.textContent = 'Update Profile';
-  profileLink.className = 'text-sm text-blue-600 underline absolute top-4 right-52';
-  document.body.appendChild(profileLink);
-
-  // 🔓 Logout function
-  function logout() {
-    localStorage.removeItem('token');
-    window.location.href = '/login.html';
-  }
-</script>
 </body>
-
-<script>
-  function logout() {
-    localStorage.removeItem('token');
-    window.location.href = '/login.html';
-  }
-</script>
 </html>
