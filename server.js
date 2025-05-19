@@ -6,11 +6,13 @@ const jwt = require('jsonwebtoken');
 const { Pool } = require('pg');
 require('dotenv').config();
 
+
 // 🧩 Route Modules
 const { router: authRoutes } = require('./server/auth');
 const dashboardRoutes = require('./server/dashboard');
 const lookupRoutes = require('./server/lookups');
 const adminRoutes = require('./server/admin');
+const { router: userRoutes } = require('./server/user');
 
 // 🚀 Express App Initialization
 const app = express();
@@ -34,6 +36,8 @@ app.use(authRoutes);
 app.use('/dashboard', dashboardRoutes);
 app.use(lookupRoutes);
 app.use('/admin', adminRoutes); // ← Add '/admin' if it's not already there
+app.use(userRoutes);
+
 
 // 📍 Route: Convert LLD to Lat/Long
 app.get('/convert', async (req, res) => {
