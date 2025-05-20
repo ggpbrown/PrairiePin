@@ -111,30 +111,44 @@
       navigator.clipboard.writeText(`${lat}, ${long}`);
     }
 
-    async function fetchLookups() {
-      try {
-        const res = await fetch('https://prairiepin-production.up.railway.app/dashboard/lookups', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const data = await res.json();
-        const tbody = document.getElementById('lookup-table-body');
-        tbody.innerHTML = '';
-        (data.lookups || []).slice(0, 10).forEach((lookup, i) => {
-          const row = document.createElement('tr');
-          row.className = i % 2 === 0 ? 'bg-white' : 'bg-[#F1FDF4]';
-          row.innerHTML = `
-            <td class="px-4 py-2 text-sm">${new Date(lookup.timestamp).toLocaleString()}</td>
-            <td class="px-4 py-2 text-sm">${lookup.lld_entered}</td>
-            <td class="px-4 py-2 text-sm">${lookup.province}</td>
-            <td class="px-4 py-2 text-sm">${lookup.latitude}</td>
-            <td class="px-4 py-2 text-sm">${lookup.longitude}</td>
-          `;
-          tbody.appendChild(row);
-        });
-      } catch (e) {
-        console.error('Failed to load lookups', e);
+    <script>
+      async function fetchLookups() {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+
+        try {
+          const res = await fetch('https://prairiepin-production.up.railway.app/dashboard/lookups', {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+
+          const data = await res.json();
+
+          const tbody = document.getElementById('lookup-table-body');
+          tbody.innerHTML = '';
+
+          const last10 = data.lookups?.slice(0, 10) || [];
+
+          last10.forEach((lookup, index) => {
+            const row = document.createElement('tr');
+            row.className = index % 2 === 0 ? 'bg-white' : 'bg-[#F1FDF4]';
+
+            row.innerHTML = `
+              <td class="px-3 py-2">${new Date(lookup.timestamp).toLocaleString()}</td>
+              <td class="px-3 py-2">${lookup.lld_entered}</td>
+              <td class="px-3 py-2">${lookup.province || '—'}</td>
+              <td class="px-3 py-2">${lookup.latitude}</td>
+              <td class="px-3 py-2">${lookup.longitude}</td>
+            `;
+
+            tbody.appendChild(row);
+          });
+        } catch (err) {
+          console.error("❌ Error fetching lookups:", err);
+        }
       }
-    }
+</script>
   </script>
 </body>
 </html>
