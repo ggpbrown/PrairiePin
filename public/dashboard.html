@@ -111,8 +111,7 @@
       navigator.clipboard.writeText(`${lat}, ${long}`);
     }
 
-    <script>
-      async function fetchLookups() {
+    async function fetchLookups() {
         const token = localStorage.getItem('token');
         if (!token) return;
 
@@ -148,7 +147,6 @@
           console.error("❌ Error fetching lookups:", err);
         }
       }
-</script>
   </script>
 </body>
 </html>
