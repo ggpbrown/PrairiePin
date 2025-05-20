@@ -26,7 +26,7 @@ router.get('/lookups', authenticateToken, async (req, res) => {
 	  LIMIT 10
 	`, [userId]);
 
-    res.json(result.rows);
+    res.json({ lookups: result.rows });
   } catch (err) {
     console.error("🔥 Error in /lookups route\n", err);
     res.status(500).json({ error: 'Failed to fetch lookup history' });
