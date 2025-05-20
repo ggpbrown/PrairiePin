@@ -5,64 +5,72 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PrairiePin Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              prairie: '#085e46',
-              lime: '#8cc084',
-              mist: '#F1FDF4',
-            }
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#085e46',
+            secondary: '#8cc084',
+            highlight: '#F1FDF4',
+            grayish: '#91a2a8',
+            soft: '#c1d7ae',
           }
         }
       }
-</script>
+    }
+  </script>
 </head>
-<body class="bg-gray-100 text-gray-800">
-
-  <!-- Header -->
-  <header class="bg-[#F1FDF4] p-4 shadow-md relative flex items-center justify-between">
-    <h1 class="text-2xl font-bold text-green-900">PrairiePin</h1>
-    <div class="space-x-4">
-      <a href="/user-profile.html" class="text-sm text-blue-600 underline">My Profile</a>
-      <a href="#" onclick="logout()" class="text-sm text-blue-600 underline">Logout</a>
+<body class="bg-gray-100">
+  <header class="bg-highlight p-4 shadow relative">
+    <div class="flex justify-between items-center">
+      <div>
+        <h1 class="text-2xl font-bold text-primary">PrairiePin</h1>
+        <p class="text-sm text-secondary -mt-1">Because the grid doesn't have street signs.</p>
+      </div>
+      <div class="text-sm space-x-4">
+        <a href="/user-profile.html" class="text-blue-600 hover:underline">My Profile</a>
+        <a href="#" onclick="logout()" class="text-red-600 hover:underline">Logout</a>
+      </div>
     </div>
   </header>
 
-  <!-- Main Content -->
-  <main class="max-w-4xl mx-auto mt-8 bg-white p-6 rounded-xl shadow-md">
-    <h2 id="greeting" class="text-xl font-semibold text-green-900 mb-4 text-center"></h2>
-
+  <main class="max-w-4xl mx-auto mt-8 bg-white p-6 rounded-xl shadow">
     <div class="mb-6">
+      <h2 id="greeting" class="text-xl font-semibold text-green-900 mb-4"></h2>
       <label for="lld" class="block text-sm font-medium text-gray-700">Enter Legal Land Description (LLD)</label>
       <input type="text" id="lld" name="lld" class="mt-1 block w-full border border-gray-300 rounded-md p-2" placeholder="e.g. SW-24-38-20-W5" />
-      <button onclick="convertLLD()" class="mt-3 bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded">Convert</button>
+      <button onclick="convertLLD()" class="mt-3 bg-primary hover:bg-green-800 text-white px-4 py-2 rounded">Convert</button>
     </div>
 
-    <div id="result-box" class="mb-6 hidden">
-      <p class="text-green-700 font-medium">✅ Coordinates successfully retrieved!</p>
-      <p><strong>Latitude:</strong> <span id="latitude"></span></p>
-      <p><strong>Longitude:</strong> <span id="longitude"></span></p>
-      <p><a id="mapLink" href="#" target="_blank" class="text-blue-600 underline">View on Google Maps</a></p>
-      <button onclick="copyCoordinates()" class="mt-2 bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded">Copy Coordinates</button>
+    <div class="mb-6 hidden" id="resultBox">
+      <label for="result" class="block text-sm font-medium text-gray-700">Result</label>
+      <p class="text-sm mt-1"><strong>Latitude:</strong> <span id="latOutput"></span></p>
+      <p class="text-sm"><strong>Longitude:</strong> <span id="lngOutput"></span></p>
+      <p class="mt-1 text-sm text-blue-700 underline">
+        <a href="#" target="_blank" id="mapLink">View on Google Maps</a>
+      </p>
+      <button onclick="copyCoordinates()" class="mt-3 bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded">Copy Coordinates</button>
     </div>
 
-    <div id="error" class="text-red-600 font-medium hidden mb-4"></div>
+    <div id="successBox" class="hidden bg-green-100 text-green-800 px-4 py-2 rounded mb-4">Coordinates successfully retrieved!</div>
+    <div id="errorBox" class="hidden bg-red-100 text-red-800 px-4 py-2 rounded mb-4">An error occurred during conversion.</div>
 
-    <h3 class="text-lg font-semibold mt-8 mb-2">Last 10 Lookups</h3>
-    <table class="w-full border border-gray-300">
-      <thead class="bg-[#F1FDF4]">
-        <tr>
-          <th class="text-left px-3 py-2 border-b">Timestamp</th>
-          <th class="text-left px-3 py-2 border-b">LLD</th>
-          <th class="text-left px-3 py-2 border-b">Province</th>
-          <th class="text-left px-3 py-2 border-b">Latitude</th>
-          <th class="text-left px-3 py-2 border-b">Longitude</th>
-        </tr>
-      </thead>
-      <tbody id="lookup-table-body"></tbody>
-    </table>
+    <h3 class="text-lg font-semibold mb-2">Last 10 Lookups</h3>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="bg-highlight text-left">
+            <th class="px-3 py-2">Timestamp</th>
+            <th class="px-3 py-2">LLD</th>
+            <th class="px-3 py-2">Province</th>
+            <th class="px-3 py-2">Latitude</th>
+            <th class="px-3 py-2">Longitude</th>
+          </tr>
+        </thead>
+        <tbody id="lookup-table-body"></tbody>
+      </table>
+    </div>
   </main>
 
   <script>
@@ -74,85 +82,77 @@
       }
     }
 
-    const token = localStorage.getItem('token');
-    const decoded = decodeJWT(token);
-
-    if (!token || !decoded) {
-      window.location.href = '/login.html';
-    } else {
-      if (decoded.firstName) {
-        document.getElementById('greeting').textContent = `Welcome back, ${decoded.firstName}!`;
-      }
-      fetchLookups();
-    }
-
     function logout() {
       localStorage.removeItem('token');
       window.location.href = '/login.html';
     }
 
+    const token = localStorage.getItem('token');
+    const decoded = decodeJWT(token);
+    if (!decoded) {
+      window.location.href = '/login.html';
+    } else {
+      if (decoded?.firstName) {
+        document.getElementById('greeting').textContent = `Welcome back, ${decoded.firstName}!`;
+      }
+      fetchLookups();
+    }
+
     async function convertLLD() {
-      const lld = document.getElementById('lld').value.trim();
-      const resultBox = document.getElementById('result-box');
-      const errorBox = document.getElementById('error');
+      const lld = document.getElementById('lld').value;
+      const resultBox = document.getElementById('resultBox');
+      const errorBox = document.getElementById('errorBox');
+      const successBox = document.getElementById('successBox');
 
       resultBox.classList.add('hidden');
       errorBox.classList.add('hidden');
+      successBox.classList.add('hidden');
 
       try {
         const res = await fetch('https://prairiepin-production.up.railway.app/convert?lld=' + encodeURIComponent(lld), {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
+          headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await res.json();
-        if (res.ok) {
-          document.getElementById('latitude').textContent = data.latitude;
-          document.getElementById('longitude').textContent = data.longitude;
-          document.getElementById('mapLink').href = `https://www.google.com/maps?q=${data.latitude},${data.longitude}`;
+        if (data.latitude && data.longitude) {
+          document.getElementById('latOutput').textContent = data.latitude;
+          document.getElementById('lngOutput').textContent = data.longitude;
+          document.getElementById('mapLink').href = `https://maps.google.com/?q=${data.latitude},${data.longitude}`;
           resultBox.classList.remove('hidden');
-          fetchLookups();
+          successBox.classList.remove('hidden');
         } else {
-          errorBox.textContent = data.error || 'Something went wrong';
-          errorBox.classList.remove('hidden');
+          throw new Error('Invalid coordinates');
         }
       } catch (err) {
-        errorBox.textContent = '⚠️ Session expired. Redirecting...';
         errorBox.classList.remove('hidden');
-        setTimeout(() => {
-          window.location.href = '/login.html';
-        }, 2000);
+        console.error(err);
       }
     }
 
     function copyCoordinates() {
-      const lat = document.getElementById('latitude').textContent;
-      const lon = document.getElementById('longitude').textContent;
-      const text = `${lat}, ${lon}`;
-      navigator.clipboard.writeText(text);
+      const lat = document.getElementById('latOutput').textContent;
+      const lng = document.getElementById('lngOutput').textContent;
+      navigator.clipboard.writeText(`${lat}, ${lng}`);
     }
 
-    function fetchLookups() {
-      fetch('https://prairiepin-production.up.railway.app/lookups', {
+    async function fetchLookups() {
+      const res = await fetch('https://prairiepin-production.up.railway.app/lookups', {
         headers: { 'Authorization': `Bearer ${token}` }
-      })
-      .then(res => res.json())
-      .then(data => {
-        const tbody = document.getElementById('lookup-table-body');
-        tbody.innerHTML = '';
-        const last10 = data.slice(0, 10);
-        last10.forEach((lookup, index) => {
-          const row = document.createElement('tr');
-          row.className = index % 2 === 0 ? 'bg-white' : 'bg-[#F1FDF4]';
-          row.innerHTML = `
-            <td class="px-3 py-2">${new Date(lookup.timestamp).toLocaleString()}</td>
-            <td class="px-3 py-2">${lookup.lld_entered}</td>
-            <td class="px-3 py-2">${lookup.province || '—'}</td>
-            <td class="px-3 py-2">${lookup.latitude}</td>
-            <td class="px-3 py-2">${lookup.longitude}</td>
-          `;
-          tbody.appendChild(row);
-        });
+      });
+      const data = await res.json();
+      const tbody = document.getElementById('lookup-table-body');
+      tbody.innerHTML = '';
+      const last10 = data.slice(0, 10);
+      last10.forEach((lookup, index) => {
+        const row = document.createElement('tr');
+        row.className = index % 2 === 0 ? 'bg-white' : 'bg-highlight';
+        row.innerHTML = `
+          <td class="px-3 py-2">${new Date(lookup.timestamp).toLocaleString()}</td>
+          <td class="px-3 py-2">${lookup.lld_entered}</td>
+          <td class="px-3 py-2">${lookup.province || '—'}</td>
+          <td class="px-3 py-2">${lookup.latitude}</td>
+          <td class="px-3 py-2">${lookup.longitude}</td>
+        `;
+        tbody.appendChild(row);
       });
     }
   </script>
