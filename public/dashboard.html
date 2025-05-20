@@ -73,7 +73,9 @@
       document.getElementById('errorBox').classList.remove('hidden');
       setTimeout(() => window.location.href = '/login.html', 2000);
     } else {
-      document.getElementById('greeting').textContent = `Welcome back, ${decoded.first_name} ${decoded.last_name.charAt(0)}!`;
+      if (decoded?.firstName) {
+		  document.getElementById('greeting').textContent = `Welcome back, ${decoded.firstName}!`;
+		}
       fetchLookups();
     }
 
