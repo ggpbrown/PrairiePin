@@ -139,6 +139,8 @@
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
+      console.log("👀 Lookup Data:", data);  // ← Add this line
+
       const tbody = document.getElementById('lookup-table-body');
       tbody.innerHTML = '';
       const last10 = data.slice(0, 10);
