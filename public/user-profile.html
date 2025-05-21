@@ -1,134 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>User Profile – PrairiePin</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            prairie: {
-              light: '#F1FDF4',
-              green: '#085e46',
-              lime: '#8cc084',
-              grayish: '#91a2a8',
-              soft: '#c1d7ae'
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Profile - PrairiePin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: '#085e46',
+              accent: '#8cc084',
+              softgreen: '#F1FDF4',
+              softgray: '#F5F6F8',
+              steel: '#91a2a8',
             }
           }
         }
       }
-    };
-  </script>
-</head>
-<body class="bg-prairie-light min-h-screen text-gray-800">
-
-  <!-- Header -->
-  <header class="bg-prairie-light p-4 shadow relative">
-    <h1 class="text-2xl font-bold text-prairie-green">PrairiePin</h1>
-    <p class="text-sm text-prairie-green">Because the grid doesn't have street signs.</p>
-    <button onclick="logout()" class="absolute top-4 right-4 bg-gray-700 hover:bg-gray-800 text-white px-4 py-1 rounded text-sm">Logout</button>
-  </header>
-
-  <!-- Main Content -->
-  <main class="max-w-xl mx-auto bg-white p-6 mt-6 rounded-xl shadow-md">
-    <h2 class="text-xl font-semibold text-center text-prairie-green mb-4">Your Profile</h2>
-
-    <form id="profile-form" class="space-y-4">
+    </script>
+  </head>
+  <body class="bg-softgray min-h-screen">
+    <header class="bg-softgreen p-4 shadow flex justify-between items-center">
       <div>
-        <label for="first_name" class="block text-sm font-medium">First Name</label>
-        <input type="text" id="first_name" name="first_name" class="mt-1 block w-full border border-gray-300 rounded-md p-2" />
+        <h1 class="text-2xl font-bold text-primary">PrairiePin</h1>
+        <p class="text-sm text-steel">Because the grid doesn't have street signs.</p>
       </div>
-
-      <div>
-        <label for="last_name" class="block text-sm font-medium">Last Name</label>
-        <input type="text" id="last_name" name="last_name" class="mt-1 block w-full border border-gray-300 rounded-md p-2" />
+      <div class="flex gap-4">
+        <a href="/dashboard.html" class="text-sm text-blue-600 underline">Back to Dashboard</a>
+        <button onclick="logout()" class="bg-red-600 text-white px-4 py-1 rounded hover:bg-red-700">Logout</button>
       </div>
+    </header>
 
-      <div>
-        <label for="email" class="block text-sm font-medium">Email</label>
-        <input type="email" id="email" name="email" class="mt-1 block w-full border border-gray-300 rounded-md p-2" />
-      </div>
+    <main class="max-w-xl mx-auto bg-white mt-10 p-6 rounded-xl shadow-md">
+      <h2 class="text-xl font-semibold text-center text-primary mb-6">Your Profile</h2>
+      <form id="profileForm" class="space-y-4">
+        <input type="text" id="first_name" placeholder="First Name" class="w-full p-2 border border-gray-300 rounded" required />
+        <input type="text" id="last_name" placeholder="Last Name" class="w-full p-2 border border-gray-300 rounded" required />
+        <input type="email" id="email" placeholder="Email" class="w-full p-2 border border-gray-300 rounded" required />
+        <input type="text" id="city" placeholder="City" class="w-full p-2 border border-gray-300 rounded" />
+        <input type="text" id="province" placeholder="Province/State" class="w-full p-2 border border-gray-300 rounded" />
 
-      <div>
-        <label for="city" class="block text-sm font-medium">City</label>
-        <input type="text" id="city" name="city" class="mt-1 block w-full border border-gray-300 rounded-md p-2" />
-      </div>
+        <div class="pt-4 border-t">
+          <h3 class="font-medium mb-2">Change Password</h3>
+          <input type="password" id="newPassword" placeholder="New password" class="w-full p-2 border border-gray-300 rounded" />
+          <input type="password" id="confirmPassword" placeholder="Confirm new password" class="w-full p-2 border border-gray-300 rounded mt-2" />
+        </div>
 
-      <div>
-        <label for="province_state" class="block text-sm font-medium">Province/State</label>
-        <input type="text" id="province_state" name="province_state" class="mt-1 block w-full border border-gray-300 rounded-md p-2" />
-      </div>
+        <div id="message" class="text-center text-sm mt-2"></div>
 
-      <button type="submit" class="w-full bg-prairie-green hover:bg-green-900 text-white py-2 rounded">Update Profile</button>
-    </form>
+        <button type="submit" class="bg-primary w-full text-white py-2 rounded hover:bg-green-800">Update Profile</button>
+      </form>
+    </main>
 
-    <p id="status" class="mt-4 text-sm text-center text-green-700"></p>
-  </main>
-
-  <script>
-    function logout() {
-      localStorage.removeItem('token');
-      window.location.href = '/login.html';
-    }
-
-    function decodeJWT(token) {
-      try {
-        return JSON.parse(atob(token.split('.')[1]));
-      } catch {
-        return null;
+    <script>
+      function logout() {
+        localStorage.removeItem('token');
+        window.location.href = '/login.html';
       }
-    }
 
-    async function loadProfile() {
-      const token = localStorage.getItem('token');
-      if (!token) return window.location.href = '/login.html';
+      document.addEventListener('DOMContentLoaded', () => {
+        const token = localStorage.getItem('token');
+        if (!token) return window.location.href = '/login.html';
 
-      const decoded = decodeJWT(token);
-      const res = await fetch(`https://prairiepin-production.up.railway.app/me`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      const data = await res.json();
-      if (!data || !data.email) return;
-
-      document.getElementById('first_name').value = data.first_name || '';
-      document.getElementById('last_name').value = data.last_name || '';
-      document.getElementById('email').value = data.email || '';
-      document.getElementById('city').value = data.city || '';
-      document.getElementById('province_state').value = data.province_state || '';
-    }
-
-    async function saveProfile(e) {
-      e.preventDefault();
-      const token = localStorage.getItem('token');
-      if (!token) return;
-
-      const updated = {
-        first_name: document.getElementById('first_name').value,
-        last_name: document.getElementById('last_name').value,
-        email: document.getElementById('email').value,
-        city: document.getElementById('city').value,
-        province_state: document.getElementById('province_state').value
-      };
-
-      const res = await fetch(`https://prairiepin-production.up.railway.app/me`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(updated)
+        const decoded = JSON.parse(atob(token.split('.')[1]));
+        document.getElementById('first_name').value = decoded.firstName || '';
+        document.getElementById('last_name').value = decoded.lastName || '';
+        document.getElementById('email').value = decoded.email || '';
+        document.getElementById('city').value = decoded.city || '';
+        document.getElementById('province').value = decoded.province || '';
       });
 
-      const result = await res.json();
-      document.getElementById('status').textContent = result.message || 'Profile updated successfully!';
-    }
+      document.getElementById('profileForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const token = localStorage.getItem('token');
+        const payload = {
+          first_name: document.getElementById('first_name').value,
+          last_name: document.getElementById('last_name').value,
+          email: document.getElementById('email').value,
+          city: document.getElementById('city').value,
+          province: document.getElementById('province').value,
+          newPassword: document.getElementById('newPassword').value,
+          confirmPassword: document.getElementById('confirmPassword').value
+        };
 
-    document.getElementById('profile-form').addEventListener('submit', saveProfile);
+        const res = await fetch('https://prairiepin-production.up.railway.app/me', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify(payload)
+        });
 
-    loadProfile();
-  </script>
-</body>
+        const msg = document.getElementById('message');
+        if (res.ok) {
+          msg.textContent = '✅ Profile updated successfully!';
+          msg.className = 'text-green-600 text-center';
+        } else {
+          msg.textContent = '❌ Error updating profile.';
+          msg.className = 'text-red-600 text-center';
+        }
+      });
+    </script>
+  </body>
 </html>
