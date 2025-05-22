@@ -31,7 +31,9 @@ router.get('/me', async (req, res) => {
 
 router.put('/me', async (req, res) => {
   const authHeader = req.headers.authorization;
-  if (!authHeader?.startsWith('Bearer ')) return res.status(401).json({ error: 'Missing token' });
+  if (!authHeader?.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Missing token' });
+  }
 
   try {
     const token = authHeader.slice(7);
@@ -39,16 +41,25 @@ router.put('/me', async (req, res) => {
     const userId = decoded.userId;
 
     const { first_name, last_name, email, city, province } = req.body;
-    console.log("🔄 Updating profile with:", { first_name, last_name, email, city, province });
 
-    await pool.query(
-      `UPDATE users SET first_name=$1, last_name=$2, email=$3, city=$4, province_state=$5, last_updated = NOW()
-       WHERE id=$6`,
-      [first_name, last_name, email, city, province, userId, last_updated]
+    const result = await pool.query(
+      `UPDATE users 
+       SET first_name = $1,
+           last_name = $2,
+           email = $3,
+           city = $4,
+           province = $5,
+           last_updated = NOW()
+       WHERE id = $6
+       RETURNING *`,
+      [first_name, last_name, email, city, province, userId]
     );
 
-    res.json({ message: 'Profile updated' });
+    console.log('🔧 Profile updated for user ID:', userId);
+    res.json({ message: 'Profile updated', user: result.rows[0] });
+
   } catch (err) {
+    console.error('❌ Error updating profile:', err);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
