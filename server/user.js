@@ -48,7 +48,7 @@ router.put('/me', async (req, res) => {
            last_name = $2,
            email = $3,
            city = $4,
-           province = $5,
+           province_state = $5,
            last_updated = NOW()
        WHERE id = $6
        RETURNING *`,
