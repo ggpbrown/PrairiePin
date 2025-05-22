@@ -38,11 +38,12 @@ router.put('/me', async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const userId = decoded.userId;
 
-    const { first_name, last_name, email, city, province_state } = req.body;
+    const { first_name, last_name, email, city, province } = req.body;
+    console.log("🔄 Updating profile with:", { first_name, last_name, email, city, province });
 
     await pool.query(
       `UPDATE users SET first_name=$1, last_name=$2, email=$3, city=$4, province_state=$5 WHERE id=$6`,
-      [first_name, last_name, email, city, province_state, userId]
+      [first_name, last_name, email, city, province, userId]
     );
 
     res.json({ message: 'Profile updated' });
