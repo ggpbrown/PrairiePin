@@ -28,10 +28,11 @@
         <h1 class="text-2xl font-bold text-primary">PrairiePin</h1>
         <p class="text-sm text-secondary -mt-1">Because the grid doesn't have street signs.</p>
       </div>
-      <div class="text-sm space-x-4">
-        <a href="/user-profile.html" class="text-blue-600 hover:underline">My Profile</a>
-        <a href="#" onclick="logout()" class="text-red-600 hover:underline">Logout</a>
+      <div id="nav-links" class="flex gap-4">
+        <a href="/user-profile.html" class="text-sm text-blue-600 underline">My Profile</a>
+        <button onclick="logout()" class="bg-red-600 text-white px-4 py-1 rounded hover:bg-red-700">Log Out</button>
       </div>
+      
     </div>
   </header>
 
@@ -157,6 +158,37 @@
         tbody.appendChild(row);
       });
     }
+
+    const decoded = decodeJWT(token);
+
+    if (decoded?.isAdmin) {
+      const adminLink = document.createElement('a');
+      adminLink.href = '/admin.html';
+      adminLink.textContent = 'Admin Tools';
+      adminLink.className = 'text-sm text-blue-600 underline ml-4';
+      document.getElementById('nav-links').appendChild(adminLink);
+    }
   </script>
+  <script>
+  const token = localStorage.getItem('token');
+  if (token) {
+    const decoded = JSON.parse(atob(token.split('.')[1]));
+
+    // Show Admin Tools if admin
+    if (decoded?.isAdmin) {
+      const adminLink = document.createElement('a');
+      adminLink.href = '/admin.html';
+      adminLink.textContent = 'Admin Tools';
+      adminLink.className = 'text-sm text-blue-600 underline ml-4';
+      document.getElementById('navLinks').appendChild(adminLink);
+    }
+
+    // Personal greeting
+    const greeting = document.getElementById('greeting');
+    if (greeting && decoded.firstName) {
+      greeting.textContent = `Welcome back, ${decoded.firstName}!`;
+    }
+  }
+</script>
 </body>
 </html>
