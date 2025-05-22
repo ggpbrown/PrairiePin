@@ -42,7 +42,8 @@ router.put('/me', async (req, res) => {
     console.log("🔄 Updating profile with:", { first_name, last_name, email, city, province });
 
     await pool.query(
-      `UPDATE users SET first_name=$1, last_name=$2, email=$3, city=$4, province_state=$5 WHERE id=$6`,
+      `UPDATE users SET first_name=$1, last_name=$2, email=$3, city=$4, province_state=$5, last_updated = NOW()
+       WHERE id=$6`,
       [first_name, last_name, email, city, province, userId]
     );
 
