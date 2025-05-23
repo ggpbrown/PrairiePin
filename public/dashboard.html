@@ -116,33 +116,35 @@
     }
 
     async function fetchLookups() {
-      const token = localStorage.getItem('token');
-      if (!token) return;
+  const token = localStorage.getItem('token');
+  if (!token) return;
 
-      const res = await fetch('https://prairiepin-production.up.railway.app/lookups', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      const data = await res.json();
-      const last10 = data.slice(0, 10);
+  try {
+    const res = await fetch('https://prairiepin-production.up.railway.app/lookups', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const data = await res.json();
 
-      const tbody = document.getElementById('lookup-table-body');
-      tbody.innerHTML = '';
-      last10.forEach((lookup, index) => {
-        const row = document.createElement('tr');
-        row.className = index % 2 === 0 ? 'bg-white' : 'bg-softgreen';
-        row.innerHTML = `
-          <td class="px-3 py-2">${new Date(lookup.timestamp).toLocaleString()}</td>
-          <td class="px-3 py-2">${lookup.lld_entered}</td>
-          <td class="px-3 py-2">${lookup.province || '—'}</td>
-          <td class="px-3 py-2">${lookup.latitude}</td>
-          <td class="px-3 py-2">${lookup.longitude}</td>
-        `;
-        tbody.appendChild(row);
-      });
-      } catch (err) {
-        console.error('Error fetching lookups:', err);
-      }
-    }
+    const tbody = document.getElementById('lookup-table-body');
+    tbody.innerHTML = '';
+
+    const last10 = data.lookups?.slice(0, 10) || [];
+    last10.forEach((lookup, index) => {
+      const row = document.createElement('tr');
+      row.className = index % 2 === 0 ? 'bg-white' : 'bg-softgreen';
+      row.innerHTML = `
+        <td class="px-3 py-2">${new Date(lookup.timestamp).toLocaleString()}</td>
+        <td class="px-3 py-2">${lookup.lld_entered}</td>
+        <td class="px-3 py-2">${lookup.province || '—'}</td>
+        <td class="px-3 py-2">${lookup.latitude}</td>
+        <td class="px-3 py-2">${lookup.longitude}</td>
+      `;
+      tbody.appendChild(row);
+    });
+  } catch (err) {
+    console.error('Error fetching lookups:', err);
+  }
+}
 
     document.addEventListener('DOMContentLoaded', () => {
       const token = localStorage.getItem('token');
