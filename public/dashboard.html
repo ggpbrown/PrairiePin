@@ -148,6 +148,10 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       const token = localStorage.getItem('token');
+      if (!token) {
+        window.location.href = '/login.html';
+        return;
+      }
       const decoded = decodeJWT(token);
 
       if (decoded?.firstName) {
