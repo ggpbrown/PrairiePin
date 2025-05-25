@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PrairiePin Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: '#085e46',       // Dark green
+              softgreen: '#F1FDF4',     // Banner and stripe
+              accent: '#8cc084',        // CTA hover, accents
+              steel: '#91a2a8',         // Subtext
+              light: '#ffffff',
+              graybg: '#F5F6F8',        // Background
+            },
+            borderRadius: {
+              xl: '1rem',
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .fade-in {
+        animation: fadeIn 1s ease-out both;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(12px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+    </style>
+  </head>
+  <body class="bg-graybg text-primary">
+    <!-- Hero Section -->
+    <section class="bg-softgreen py-20 px-6">
+      <div class="max-w-5xl mx-auto text-left fade-in">
+        <h1 class="text-4xl font-bold mb-2">PrairiePin Pro</h1>
+        <p class="text-steel text-lg mb-6 max-w-2xl">
+          Built for teams who need more than just a map pin. PrairiePin Pro adds accountability, insights, and communication — while keeping things fast and simple.
+        </p>
+        <a href="mailto:info@prairiepin.ca" class="inline-block px-6 py-3 bg-primary text-light rounded-xl hover:bg-accent transition">Request a Demo</a>
+      </div>
+    </section>
+
+    <!-- Feature Highlights -->
+    <section class="py-16 px-6">
+      <div class="max-w-4xl mx-auto grid gap-8 sm:grid-cols-2">
+        <div class="bg-white p-6 rounded-xl shadow fade-in">
+          <h3 class="text-xl font-semibold mb-2">User Management</h3>
+          <p class="text-steel text-sm">Admins can create and manage team accounts with ease — no IT required.</p>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow fade-in">
+          <h3 class="text-xl font-semibold mb-2">Email Notifications</h3>
+          <p class="text-steel text-sm">Notify users of changes, updates, or outages instantly.</p>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow fade-in">
+          <h3 class="text-xl font-semibold mb-2">Lookup Analytics</h3>
+          <p class="text-steel text-sm">Track who searched what, when, and where — no more mystery lookups.</p>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow fade-in">
+          <h3 class="text-xl font-semibold mb-2">Region-Based Reporting</h3>
+          <p class="text-steel text-sm">View trends by province and export them when you need to show your work.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="bg-white py-12 px-6">
+      <div class="max-w-2xl mx-auto text-center fade-in">
+        <h2 class="text-2xl font-bold mb-4">Want to see it in action?</h2>
+        <p class="text-steel mb-6">We’ll walk you through a live demo so you can see what PrairiePin Pro could do for your team.</p>
+        <a href="mailto:info@prairiepin.ca" class="inline-block px-6 py-3 bg-primary text-light rounded-xl hover:bg-accent transition">Schedule a Demo</a>
+      </div>
+    </section>
+  </body>
+</html>
