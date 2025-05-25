@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PrairiePin Style Guide</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#085e46',
+            accent: '#8cc084',
+            softgreen: '#F1FDF4',
+            softgray: '#F5F6F8',
+            steel: '#91a2a8',
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-softgray text-gray-800">
+  <header class="bg-softgreen p-6 shadow">
+    <h1 class="text-3xl font-bold text-primary">PrairiePin Style Guide</h1>
+    <p class="text-steel">Your visual and UI reference toolkit</p>
+  </header>
+
+  <main class="max-w-4xl mx-auto mt-8 p-6 bg-white rounded-2xl shadow-md space-y-10">
+
+    <section>
+      <h2 class="text-2xl font-semibold text-primary mb-4">Colors</h2>
+      <div class="grid grid-cols-3 gap-4">
+        <div class="p-4 rounded shadow bg-primary text-white">primary<br><code>#085e46</code></div>
+        <div class="p-4 rounded shadow bg-accent text-black">accent<br><code>#8cc084</code></div>
+        <div class="p-4 rounded shadow bg-softgreen text-black">softgreen<br><code>#F1FDF4</code></div>
+        <div class="p-4 rounded shadow bg-softgray text-black">softgray<br><code>#F5F6F8</code></div>
+        <div class="p-4 rounded shadow bg-steel text-white">steel<br><code>#91a2a8</code></div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="text-2xl font-semibold text-primary mb-4">Containers</h2>
+      <div class="p-6 bg-softgreen rounded-2xl shadow">Use <code>max-w-xl p-6 rounded-2xl shadow</code> for clean card containers</div>
+    </section>
+
+    <section>
+      <h2 class="text-2xl font-semibold text-primary mb-4">Form Inputs</h2>
+      <input type="text" placeholder="Example input" class="w-full p-2 border border-gray-300 rounded" />
+    </section>
+
+    <section>
+      <h2 class="text-2xl font-semibold text-primary mb-4">Primary Button</h2>
+      <button class="bg-primary text-white px-4 py-2 rounded hover:bg-green-800">Click me</button>
+    </section>
+
+    <section>
+      <h2 class="text-2xl font-semibold text-primary mb-4">Feature Box</h2>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="bg-softgreen rounded-xl p-4 shadow-sm text-center">
+          <h3 class="text-lg font-bold text-primary">User Management</h3>
+          <p class="text-sm text-steel">Create, update and manage users</p>
+        </div>
+        <div class="bg-softgreen rounded-xl p-4 shadow-sm text-center">
+          <h3 class="text-lg font-bold text-primary">Lookups by Province</h3>
+          <p class="text-sm text-steel">Visualize system usage</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="text-2xl font-semibold text-primary mb-4">Table Style</h2>
+      <table class="w-full text-sm text-left">
+        <thead class="bg-softgreen text-primary font-semibold">
+          <tr>
+            <th class="p-2">Date</th>
+            <th class="p-2">LLD</th>
+            <th class="p-2">Province</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="bg-white">
+            <td class="p-2">2025-05-01</td>
+            <td class="p-2">SW-24-38-20-W5</td>
+            <td class="p-2">Alberta</td>
+          </tr>
+          <tr class="bg-softgreen">
+            <td class="p-2">2025-05-02</td>
+            <td class="p-2">NE-12-34-11-W4</td>
+            <td class="p-2">Saskatchewan</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+</body>
+</html>
