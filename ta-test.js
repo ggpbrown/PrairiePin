@@ -5,6 +5,7 @@ const router = express.Router();
 const TA_API_KEY = process.env.TA_API_KEY;
 
 router.get('/test-ta-lookup', async (req, res) => {
+    console.log(`🎯 Received request for test-ta-lookup`);
   const testLocations = [
     "T9N R8E Sec 14",
     "T28N R36W Sec 8",
