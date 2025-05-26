@@ -46,11 +46,11 @@ app.use(userRoutes);
 
 
 // 📍 Route: Convert LLD to Lat/Long
-app.get('/convert', async (req, res) => {
+app.post('/convert', async (req, res) => {
   console.log("✅ Reached /convert");
   console.log("➡️ Authorization Header:", req.headers.authorization);
 
-  const lld = req.query.lld;
+  const lld = req.body.lld;
   const apiKey = process.env.TOWNSHIP_API_KEY;
 
   if (!lld) {
@@ -120,7 +120,7 @@ app.post('/convert-ta', async (req, res) => {
   console.log("✅ Reached /convert-ta");
   console.log("➡️ Authorization Header:", req.headers.authorization);
 
-  const { lld } = req.body;
+  const { lld } = req.body.lld;
   const apiKey = process.env.TA_API_KEY;
 
   if (!lld) {
