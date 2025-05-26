@@ -117,8 +117,10 @@ app.post('/convert', async (req, res) => {
 
 // 📍 Route: Convert PLSS (U.S.) to Lat/Long
 app.post('/convert-ta', async (req, res) => {
+  console.log("🧪 Incoming body:", req.body);
   console.log("✅ Reached /convert-ta");
-  console.log("➡️ Authorization Header:", req.headers.authorization);
+  const maskedAuth = req.headers.authorization?.slice(0, 20) + '...';
+  console.log("➡️ Authorization Header (partial):", maskedAuth);
 
   const { lld } = req.body.lld;
   const apiKey = process.env.TA_API_KEY;
