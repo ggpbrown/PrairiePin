@@ -12,6 +12,7 @@ const { router: authRoutes } = require('./server/auth');
 const dashboardRoutes = require('./server/dashboard');
 const lookupRoutes = require('./server/lookups');
 const adminRoutes = require('./server/admin');
+const taTestRoutes = require('./ta-test');
 const { router: userRoutes } = require('./server/user');
 
 // 🚀 Express App Initialization
@@ -35,7 +36,12 @@ app.use(express.json());
 app.use(authRoutes);
 app.use('/dashboard', dashboardRoutes);
 app.use(lookupRoutes);
+app.use('/', taTestRoutes);
 app.use('/admin', adminRoutes); // ← Add '/admin' if it's not already there
+app.use((req, res, next) => {
+  console.log(`🌍 Caught request for ${req.method} ${req.url}`);
+  next();
+});
 app.use(userRoutes);
 
 
