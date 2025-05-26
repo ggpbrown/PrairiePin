@@ -101,13 +101,14 @@
 
     async function convertLLD() {
       const lld = document.getElementById('lld').value;
+      const region = document.querySelector('input[name="region"]:checked')?.value || 'TC';
       const token = localStorage.getItem('token');
 
-      // Check for CDN/US input formats
+      // ✨ Pattern matching
       const isPLSS = /^[Tt]\d+[NS]\s*[Rr]\d+[EW]\s*(Sec\s*\d+)?/.test(lld);
       const isDLS = /^([NSWE]{1,2}-)?\d{1,2}-\d{1,2}-\d{1,2}-W\d/.test(lld);
 
-      // Check for mismatch on form radio buttons
+      // 🧠 Smart prompt
       if ((region === 'TC' && isPLSS) || (region === 'TA' && isDLS)) {
         const wantsToSwitch = confirm(
           `Sparky thinks this might be a ${region === 'TC' ? 'U.S.' : 'Canadian'} location.\n` +
@@ -115,12 +116,11 @@
         );
 
         if (wantsToSwitch) {
-          // Flip the selected radio button
           document.querySelector(`input[name="region"][value="${region === 'TC' ? 'TA' : 'TC'}"]`).checked = true;
-          return; // Let user re-click Convert
+          return;
         }
       }
-      
+
       // 👇 NEW: Get selected region (TC or TA)
       const region = document.querySelector('input[name="region"]:checked')?.value || 'TC';
 
