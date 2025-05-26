@@ -117,20 +117,19 @@ app.post('/convert', async (req, res) => {
 
 // 📍 Route: Convert PLSS (U.S.) to Lat/Long
 app.post('/convert-ta', async (req, res) => {
+  const { lld } = req.body;
+  const apiKey = process.env.TA_API_KEY;
+
   console.log("🧪 Incoming body:", req.body);
   console.log("✅ Reached /convert-ta");
   const maskedAuth = req.headers.authorization?.slice(0, 20) + '...';
   console.log("➡️ Authorization Header (partial):", maskedAuth);
-
-  const { lld } = req.body.lld;
-  const apiKey = process.env.TA_API_KEY;
 
   if (!lld) {
     return res.status(400).json({ error: 'Missing LLD parameter' });
   }
 
   const apiUrl = `https://developer.townshipamerica.com/search/legal-location?location=${encodeURIComponent(lld)}`;
-
   try {
     const response = await fetch(apiUrl, {
       headers: {
