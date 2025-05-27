@@ -30,7 +30,7 @@ app.use(cors({
   origin: 'https://prairiepin-auth.netlify.app',
   credentials: true
 }));
-app.options('*', cors());
+
 app.use(express.json());
 
 // 🔌 Route Mounting
