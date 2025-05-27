@@ -43,8 +43,7 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100">
-            <!-- Dynamic user rows -->
-            <% users.forEach(user => { %>
+            <% users.forEach(function(user) { %>
               <tr>
                 <td class="px-4 py-2"><%= user.first_name %> <%= user.last_name %></td>
                 <td class="px-4 py-2"><%= user.email %></td>
