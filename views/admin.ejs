@@ -69,16 +69,16 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100">
-            <% users.forEach(function(user) { %>
-              <tr>
+            <% users.forEach(user => { %>
+            <tr class="even:bg-softgreen">
                 <td class="px-4 py-2"><%= user.first_name %> <%= user.last_name %></td>
                 <td class="px-4 py-2"><%= user.email %></td>
-                <td class="px-4 py-2"><%= user.last_login || '—' %></td>
+                <td class="px-4 py-2"><%= user.last_login || '--' %></td>
                 <td class="px-4 py-2"><%= user.total_lookups %></td>
                 <td class="px-4 py-2">
-                  <a href="/admin/user/<%= user.id %>" class="text-accent hover:underline">View</a>
+                <a href="#" class="text-accent hover:underline">View</a>
                 </td>
-              </tr>
+            </tr>
             <% }); %>
           </tbody>
         </table>
