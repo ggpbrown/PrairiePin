@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Dashboard | PrairiePin</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link href="/css/styles.css" rel="stylesheet">
 </head>
 <body class="bg-softgray text-primary font-sans min-h-screen flex flex-col">
 
@@ -20,8 +21,15 @@
 
       <!-- Top Actions -->
       <div class="flex justify-between items-center mb-6">
-        <a href="/dashboard.html" class="text-accent hover:underline">&larr; Back to Search</a>
-        <a href="/logout" class="text-red-500 hover:underline">Log Out</a>
+        <a href="/dashboard.html" class="text-accent hover:underline">← Back to Dashboard</a>
+        <a href="#" onclick="logout()" class="text-red-600 hover:underline">Logout</a>
+
+            <script>
+            function logout() {
+                localStorage.removeItem('token');
+                window.location.href = '/login.html';
+            }
+            </script>
       </div>
 
       <!-- Page Title -->
