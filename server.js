@@ -51,8 +51,20 @@ app.use(userRoutes);
 //Route for admin dashboard
 app.get('/admin', async (req, res) => {
   try {
-    const users = await pool.query('SELECT id, first_name, last_name, email, last_login, total_lookups FROM users ORDER BY last_login DESC');
-    res.render('admin', { users: users.rows });
+    const users = await pool.query(`
+      SELECT 
+        u.id,
+        u.first_name,
+        u.last_name,
+        u.email,
+        u.last_login,
+        COUNT(l.id) AS total_lookups
+      FROM users u
+      LEFT JOIN lookups l ON l.user_id = u.id
+      GROUP BY u.id
+      ORDER BY u.last_login DESC
+    `);
+res.render('admin', { users: users.rows });
   } catch (err) {
     console.error("Error loading admin page:", err);
     res.status(500).send("Error loading admin page.");
