@@ -5,7 +5,6 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const { Pool } = require('pg');
 require('dotenv').config();
-const path = require('path');
 
 
 // 🧩 Route Modules
@@ -18,8 +17,6 @@ const { router: userRoutes } = require('./server/user');
 
 // 🚀 Express App Initialization
 const app = express();
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
 const PORT = process.env.PORT || 3000;
 
 // 🛡️ PostgreSQL Connection
@@ -47,17 +44,6 @@ app.use((req, res, next) => {
   next();
 });
 app.use(userRoutes);
-
-//Route for admin dashboard
-app.get('/admin', async (req, res) => {
-  try {
-    const users = await pool.query('SELECT id, first_name, last_name, email, last_login, total_lookups FROM users ORDER BY last_login DESC');
-    res.render('admin', { users: users.rows });
-  } catch (err) {
-    console.error("Error loading admin page:", err);
-    res.status(500).send("Error loading admin page.");
-  }
-});
 
 
 // 📍 Route: Convert LLD to Lat/Long
@@ -129,7 +115,6 @@ app.post('/convert', async (req, res) => {
     return res.status(500).json({ error: 'Server error. Try again later.' });
   }
 });
-
 
 // 📍 Route: Convert PLSS (U.S.) to Lat/Long
 app.post('/convert-ta', async (req, res) => {

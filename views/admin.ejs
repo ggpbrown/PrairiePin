@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard | PrairiePin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-softgray text-primary font-sans min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-softgreen py-4 text-center">
+    <h1 class="text-3xl font-bold text-primary">PrairiePin</h1>
+    <p class="text-steel">Because the grid doesn't have street signs.</p>
+  </header>
+
+  <!-- Main Container -->
+  <main class="flex-grow flex items-center justify-center px-4 py-10">
+    <div class="bg-white rounded-2xl shadow-md w-full max-w-4xl p-6">
+
+      <!-- Top Actions -->
+      <div class="flex justify-between items-center mb-6">
+        <a href="/dashboard.html" class="text-accent hover:underline">&larr; Back to Search</a>
+        <a href="/logout" class="text-red-500 hover:underline">Log Out</a>
+      </div>
+
+      <!-- Page Title -->
+      <div class="text-center mb-6">
+        <h2 class="text-2xl font-bold">Admin Dashboard</h2>
+        <p class="text-steel text-sm">View users and lookup activity</p>
+      </div>
+
+      <!-- User Table -->
+      <div class="overflow-x-auto">
+        <table class="min-w-full border border-gray-200 text-sm text-left">
+          <thead class="bg-softgray text-primary font-semibold">
+            <tr>
+              <th class="px-4 py-2 border-b">Name</th>
+              <th class="px-4 py-2 border-b">Email</th>
+              <th class="px-4 py-2 border-b">Last Login</th>
+              <th class="px-4 py-2 border-b">Lookups</th>
+              <th class="px-4 py-2 border-b"></th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100">
+            <% users.forEach(function(user) { %>
+              <tr>
+                <td class="px-4 py-2"><%= user.first_name %> <%= user.last_name %></td>
+                <td class="px-4 py-2"><%= user.email %></td>
+                <td class="px-4 py-2"><%= user.last_login || '—' %></td>
+                <td class="px-4 py-2"><%= user.total_lookups %></td>
+                <td class="px-4 py-2">
+                  <a href="/admin/user/<%= user.id %>" class="text-accent hover:underline">View</a>
+                </td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </main>
+</body>
+</html>
