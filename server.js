@@ -3,6 +3,7 @@ const express = require('express');
 const fetch = require('node-fetch');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
 const { Pool } = require('pg');
 require('dotenv').config();
 const path = require('path');
@@ -38,6 +39,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // 🔌 Route Mounting
+app.use(cookieParser());
 app.use(authRoutes);
 app.use('/dashboard', dashboardRoutes);
 app.use(lookupRoutes);
