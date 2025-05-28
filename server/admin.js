@@ -5,13 +5,15 @@ const jwt = require('jsonwebtoken');
 const { sendAccountUpdateEmail } = require('./utils/email');
 require('dotenv').config();
 
-// 🚨 Middleware for admin-only access (reuse if you have one)
+const jwt = require('jsonwebtoken');
+
+// 🚨 Updated Middleware for admin-only access (uses cookie)
 const isAdmin = (req, res, next) => {
-  const token = req.headers.authorization?.split(' ')[1];
+  const token = req.cookies?.token;
   if (!token) return res.status(401).send('Not authorized');
 
   try {
-    const decoded = require('jsonwebtoken').verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     if (!decoded.isAdmin) return res.status(403).send('Forbidden');
     req.user = decoded;
     next();
