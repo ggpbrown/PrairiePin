@@ -1,37 +1,40 @@
 // server/lookups.js
 const express = require('express');
 const router = express.Router();
+const jwt = require('jsonwebtoken');
 const { Pool } = require('pg');
-const { authenticateToken } = require('./auth');
-
-require('dotenv').config();
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false }
 });
 
-// Protected route: fetch stats
-router.get('/lookups', authenticateToken, async (req, res) => {
-	console.log("➡️ /lookups called by user:", req.user?.userId);
-
-  const userId = req.user.userId;
+// GET /lookups – Get recent lookups for the logged-in user
+router.get('/lookups', async (req, res) => {
+  const token = req.cookies?.token;
+  if (!token) {
+    return res.status(401).json({ error: 'Not authorized' });
+  }
 
   try {
-    const result = await pool.query(`
-	  SELECT id, user_id, lld_entered, province, latitude, longitude, timestamp
-	  FROM lookups
-	  WHERE user_id = $1
-	  ORDER BY timestamp DESC
-	  LIMIT 10
-	`, [userId]);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.userId;
+
+    const result = await pool.query(
+      `SELECT lld_entered, latitude, longitude, province, timestamp 
+       FROM lookups 
+       WHERE user_id = $1 
+       ORDER BY timestamp DESC 
+       LIMIT 10`,
+      [userId]
+    );
 
     res.json({ lookups: result.rows });
+
   } catch (err) {
-    console.error("🔥 Error in /lookups route\n", err);
-    res.status(500).json({ error: 'Failed to fetch lookup history' });
+    console.error("Error verifying token or querying lookups:", err);
+    res.status(401).json({ error: 'Invalid or expired token' });
   }
 });
-
 
 module.exports = router;
