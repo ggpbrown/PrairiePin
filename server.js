@@ -39,7 +39,9 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // 🔌 Route Mounting
+const cookieParser = require('cookie-parser');
 app.use(cookieParser());
+
 app.use(authRoutes);
 app.use('/dashboard', dashboardRoutes);
 app.use(lookupRoutes);
