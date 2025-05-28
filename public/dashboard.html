@@ -36,7 +36,6 @@
   <main class="max-w-4xl mx-auto mt-8 bg-white p-6 rounded-xl shadow-md">
     <h2 id="greeting" class="text-xl font-semibold text-center text-primary mb-6"></h2>
 
-
     <div class="mb-6">
       <label for="lld" class="block text-sm font-medium text-gray-700">Enter Legal Land Description (LLD)</label>
       <input type="text" id="lld" name="lld" class="mt-1 block w-full border border-gray-300 rounded-md p-2" placeholder="e.g. SW-24-38-20-W5" />
@@ -86,29 +85,23 @@
   </main>
 
   <script>
-    function decodeJWT(token) {
-      try {
-        return JSON.parse(atob(token.split('.')[1]));
-      } catch {
-        return null;
-      }
-    }
-
     function logout() {
-      localStorage.removeItem('token');
-      window.location.href = '/login.html';
+      fetch('https://prairiepin-production.up.railway.app/logout', {
+        method: 'POST',
+        credentials: 'include'
+      }).finally(() => {
+        window.location.href = '/login.html';
+      });
     }
 
     async function convertLLD() {
       const lld = document.getElementById('lld').value;
       const region = document.querySelector('input[name="region"]:checked')?.value || 'TC';
-      const token = localStorage.getItem('token');
 
       // ✨ Pattern matching
       const isPLSS = /^[Tt]\d+[NS]\s*[Rr]\d+[EW]\s*(Sec\s*\d+)?/.test(lld);
       const isDLS = /^([NSWE]{1,2}-)?\d{1,2}-\d{1,2}-\d{1,2}-W\d/.test(lld);
 
-      // 🧠 Smart prompt
       if ((region === 'TC' && isPLSS) || (region === 'TA' && isDLS)) {
         const wantsToSwitch = confirm(
           `Sparky thinks this might be a ${region === 'TC' ? 'U.S.' : 'Canadian'} location.\n` +
@@ -121,9 +114,6 @@
         }
       }
 
-  
-
-      // 👇 NEW: Route to correct endpoint
       const endpoint = region === 'TA'
         ? 'https://prairiepin-production.up.railway.app/convert-ta'
         : 'https://prairiepin-production.up.railway.app/convert';
@@ -134,15 +124,12 @@
       try {
         const res = await fetch(endpoint, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
           body: JSON.stringify({ lld })
         });
 
         const data = await res.json();
-
         if (!res.ok) throw new Error(data.error || 'Unknown error');
 
         const text = `Latitude: ${data.latitude}\nLongitude: ${data.longitude}`;
@@ -161,63 +148,39 @@
     }
 
     async function fetchLookups() {
-  const token = localStorage.getItem('token');
-  if (!token) {
-      window.location.href = '/login.html';
-      return;
-  }
+      try {
+        const res = await fetch('https://prairiepin-production.up.railway.app/lookups', {
+          credentials: 'include'
+        });
+        const data = await res.json();
 
-  try {
-    const res = await fetch('https://prairiepin-production.up.railway.app/lookups', {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-    const data = await res.json();
+        const tbody = document.getElementById('lookup-table-body');
+        tbody.innerHTML = '';
 
-    const tbody = document.getElementById('lookup-table-body');
-    tbody.innerHTML = '';
-
-    const last10 = data.lookups?.slice(0, 10) || [];
-    last10.forEach((lookup, index) => {
-      const row = document.createElement('tr');
-      row.className = index % 2 === 0 ? 'bg-white' : 'bg-softgreen';
-      row.innerHTML = `
-        <td class="px-3 py-2">${new Date(lookup.timestamp).toLocaleString()}</td>
-        <td class="px-3 py-2">${lookup.lld_entered}</td>
-        <td class="px-3 py-2">${lookup.province || '—'}</td>
-        <td class="px-3 py-2">${lookup.latitude}</td>
-        <td class="px-3 py-2">${lookup.longitude}</td>
-      `;
-      tbody.appendChild(row);
-    });
-  } catch (err) {
-    console.error('Error fetching lookups:', err);
-    localStorage.removeItem('token');
-    window.location.href = '/login.html';
-  }
-}
-
-    document.addEventListener('DOMContentLoaded', () => {
-      const token = localStorage.getItem('token');
-      if (!token) {
+        const last10 = data.lookups?.slice(0, 10) || [];
+        last10.forEach((lookup, index) => {
+          const row = document.createElement('tr');
+          row.className = index % 2 === 0 ? 'bg-white' : 'bg-softgreen';
+          row.innerHTML = `
+            <td class="px-3 py-2">${new Date(lookup.timestamp).toLocaleString()}</td>
+            <td class="px-3 py-2">${lookup.lld_entered}</td>
+            <td class="px-3 py-2">${lookup.province || '—'}</td>
+            <td class="px-3 py-2">${lookup.latitude}</td>
+            <td class="px-3 py-2">${lookup.longitude}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      } catch (err) {
+        console.error('Error fetching lookups:', err);
         window.location.href = '/login.html';
-        return;
       }
-      const decoded = decodeJWT(token);
+    }
 
-      if (decoded?.firstName) {
-        document.getElementById('greeting').textContent = `Welcome back, ${decoded.firstName}!`;
-      }
+    document.addEventListener('DOMContentLoaded', async () => {
+      await fetchLookups();
 
-      if (decoded?.isAdmin) {
-        const link = document.createElement('a');
-        link.href = 'https://prairiepin-production.up.railway.app/admin';
-        link.target = '_self'; // Optional, but explicit        
-        link.textContent = 'Admin Tools';
-        link.className = 'text-sm text-blue-600 underline';
-        document.querySelector('header .flex').prepend(link);
-      }
-
-      fetchLookups();
+      // Optional: You can add a /me route later and fetch user info here
+      // to show "Welcome back, [firstName]!" if you like.
     });
   </script>
 </body>
