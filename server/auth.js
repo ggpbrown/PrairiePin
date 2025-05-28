@@ -77,12 +77,12 @@ router.post('/login', async (req, res) => {
 	  JWT_SECRET,
 	  { expiresIn: '8h' }
 	);
-    res.cookie('token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'Lax', // Use 'None' only if cross-site (Netlify + Railway)
-      maxAge: 8 * 60 * 60 * 1000 // 8 hours
-    });
+      res.cookie('token', token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'None',
+        maxAge: 8 * 60 * 60 * 1000 // 8 hours
+      });
 res.status(200).json({ success: true });
 
   } catch (err) {
