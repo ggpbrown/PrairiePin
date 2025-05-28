@@ -73,7 +73,12 @@
             <tr class="even:bg-softgreen">
                 <td class="px-4 py-2"><%= user.first_name %> <%= user.last_name %></td>
                 <td class="px-4 py-2"><%= user.email %></td>
-                <td class="px-4 py-2"><%= user.last_login || '--' %></td>
+                <td class="px-4 py-2">
+                    <%= new Date(user.last_login).toLocaleString('en-US', {
+                        dateStyle: 'medium',
+                        timeStyle: 'short'
+                    }) %>
+                </td>
                 <td class="px-4 py-2"><%= user.total_lookups %></td>
                 <td class="px-4 py-2">
                 <a href="#" class="text-accent hover:underline">View</a>
