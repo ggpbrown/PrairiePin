@@ -5,6 +5,22 @@ const jwt = require('jsonwebtoken');
 const { sendAccountUpdateEmail } = require('./utils/email');
 require('dotenv').config();
 
+// 🚨 Middleware for admin-only access (reuse if you have one)
+const isAdmin = (req, res, next) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) return res.status(401).send('Not authorized');
+
+  try {
+    const decoded = require('jsonwebtoken').verify(token, process.env.JWT_SECRET);
+    if (!decoded.isAdmin) return res.status(403).send('Forbidden');
+    req.user = decoded;
+    next();
+  } catch (err) {
+    return res.status(401).send('Invalid token');
+  }
+};
+
+
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false }
@@ -44,44 +60,40 @@ router.get('/users', async (req, res) => {
   }
 });
 
-// ✅ Get individual user info
-router.get('/user/:id', async (req, res) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader?.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'Missing or invalid token' });
-  }
+// 👤 GET /admin/user/:id
+router.get('/user/:id', isAdmin, async (req, res) => {
+  const userId = req.params.id;
 
   try {
-    const token = authHeader.slice(7);
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userResult = await pool.query(`
+      SELECT id, first_name, last_name, email, created_at, last_login
+      FROM users
+      WHERE id = $1
+    `, [userId]);
 
-    const adminCheck = await pool.query(
-      'SELECT is_admin FROM users WHERE id = $1',
-      [decoded.userId]
-    );
+    const lookupsResult = await pool.query(`
+      SELECT lld_entered, latitude, longitude, province, created_at
+      FROM lookups
+      WHERE user_id = $1
+      ORDER BY created_at DESC
+      LIMIT 10
+    `, [userId]);
 
-    if (!adminCheck.rows[0]?.is_admin) {
-      return res.status(403).json({ error: 'Unauthorized' });
+    if (userResult.rows.length === 0) {
+      return res.status(404).send('User not found');
     }
 
-    const userId = req.params.id;
-    const result = await pool.query(
-      `SELECT id, email, first_name, last_name, address_line1, address_line2,
-              city, province_state, postal_code, country, is_admin, last_login
-       FROM users WHERE id = $1`,
-      [userId]
-    );
+    res.render('user-profile', {
+      user: userResult.rows[0],
+      lookups: lookupsResult.rows
+    });
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    res.json(result.rows[0]);
   } catch (err) {
-    console.error("🔥 Error fetching user details:", err);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error('🔥 Error loading user profile:', err);
+    res.status(500).send('Server error');
   }
 });
+
 
 // ✅ Update user + send email
 router.post('/user/:id', async (req, res) => {
