@@ -5,7 +5,6 @@ const jwt = require('jsonwebtoken');
 const { sendAccountUpdateEmail } = require('./utils/email');
 require('dotenv').config();
 
-const jwt = require('jsonwebtoken');
 
 // 🚨 Updated Middleware for admin-only access (uses cookie)
 const isAdmin = (req, res, next) => {
