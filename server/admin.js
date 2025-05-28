@@ -22,6 +22,10 @@ const isAdmin = (req, res, next) => {
   }
 };
 
+// Cookie parser middleware
+
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
