@@ -50,6 +50,7 @@ router.get('/users', async (req, res) => {
 // 👤 GET /admin/user/:id
 router.get('/user/:id', isAdmin, async (req, res) => {
   const userId = req.params.id;
+  console.log(`🔍 Request to view user with ID: ${userId}`);
 
   try {
     const userResult = await pool.query(`
@@ -57,6 +58,8 @@ router.get('/user/:id', isAdmin, async (req, res) => {
       FROM users
       WHERE id = $1
     `, [userId]);
+
+    console.log('👤 User lookup result:', userResult.rows);
 
     const lookupsResult = await pool.query(`
       SELECT lld_entered, latitude, longitude, province, created_at
@@ -66,17 +69,25 @@ router.get('/user/:id', isAdmin, async (req, res) => {
       LIMIT 10
     `, [userId]);
 
+    console.log('📜 Lookup records:', lookupsResult.rows);
+
     if (userResult.rows.length === 0) {
+      console.warn('⚠️ No user found for ID:', userId);
       return res.status(404).send('User not found');
     }
 
+    /*
     res.render('user-profile', {
       user: userResult.rows[0],
       lookups: lookupsResult.rows
     });
+    */
 
+    return res.json({ user: userResult.rows[0], lookups: lookupsResult.rows });
+    
   } catch (err) {
-    console.error('🔥 Error loading user profile:', err);
+    console.error('🔥 Error loading user profile route:', err.message);
+    console.error(err.stack);
     res.status(500).send('Server error');
   }
 });
