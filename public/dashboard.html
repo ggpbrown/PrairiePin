@@ -87,19 +87,24 @@
   <script>
     
     function getCookie(name) {
-      const value = `; ${document.cookie}`;
-      const parts = value.split(`; ${name}=`);
-      if (parts.length === 2) return parts.pop().split(';').shift();
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+  }
+
+  function decodeJWT(token) {
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+      return JSON.parse(jsonPayload);
+    } catch (err) {
       return null;
     }
-
-    function decodeJWT(token) {
-      try {
-        return JSON.parse(atob(token.split('.')[1]));
-      } catch {
-        return null;
-      }
-    }
+  }
 
     function logout() {
       document.cookie = "token=; Max-Age=0; path=/";
@@ -194,24 +199,30 @@
         return null;
       }
     }
-    
+
     document.addEventListener('DOMContentLoaded', async () => {
       await fetchLookups();
 
-      const token = getCookie('token');
-      const decoded = decodeJWT(token);
+      try {
+        const res = await fetch('https://prairiepin-production.up.railway.app/me', {
+          credentials: 'include'
+        });
+        const user = await res.json();
 
-      if (decoded?.firstName) {
-        document.getElementById('greeting').textContent = `Welcome back, ${decoded.firstName}!`;
-      }
+        if (user?.firstName) {
+          document.getElementById('greeting').textContent = `Welcome back, ${user.firstName}!`;
+        }
 
-      if (decoded?.isAdmin) {
-        const link = document.createElement('a');
-        link.href = 'https://prairiepin-production.up.railway.app/admin';
-        link.target = '_self';
-        link.textContent = 'Admin Tools';
-        link.className = 'text-sm text-blue-600 underline';
-        document.querySelector('header .flex').prepend(link);
+        if (user?.isAdmin) {
+          const link = document.createElement('a');
+          link.href = 'https://prairiepin-production.up.railway.app/admin';
+          link.textContent = 'Admin Tools';
+          link.className = 'text-sm text-blue-600 underline';
+          document.querySelector('header .flex').prepend(link);
+        }
+      } catch (err) {
+        console.error('Failed to fetch user info:', err);
+        window.location.href = '/login.html'; // fallback
       }
     });
   </script>
