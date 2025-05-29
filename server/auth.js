@@ -14,7 +14,21 @@ const pool = new Pool({
 });
 const JWT_SECRET = process.env.JWT_SECRET || 'changeme';
 
+// server/auth.js or server/me.js
 
+router.get('/me', (req, res) => {
+  const token = req.cookies.token;
+  if (!token) return res.status(401).json({ error: 'Not logged in' });
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const { firstName, isAdmin } = decoded;
+    return res.json({ firstName, isAdmin });
+  } catch (err) {
+    console.error('JWT decode failed:', err);
+    return res.status(403).json({ error: 'Invalid token' });
+  }
+});
 
 // (Optional) Register route
 router.post('/register', async (req, res) => {

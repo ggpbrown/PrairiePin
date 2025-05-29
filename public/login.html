@@ -51,8 +51,6 @@
       });
 
       if (res.ok) {
-        const data = await res.json();
-        localStorage.setItem('token', data.token);
         window.location.href = '/dashboard.html';
       } else {
         document.getElementById('error').classList.remove('hidden');
