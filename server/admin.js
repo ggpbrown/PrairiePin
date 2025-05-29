@@ -6,20 +6,23 @@ const { sendAccountUpdateEmail } = require('./utils/email');
 require('dotenv').config();
 
 
-// 🚨 Updated Middleware for admin-only access (uses cookie)
-const isAdmin = (req, res, next) => {
-  const token = req.cookies?.token;
-  if (!token) return res.status(401).send('Not authorized');
+const jwt = require('jsonwebtoken');
+
+function isAdmin(req, res, next) {
+  const token = req.cookies.token;
+
+  if (!token) return res.status(401).send('Unauthorized');
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     if (!decoded.isAdmin) return res.status(403).send('Forbidden');
-    req.user = decoded;
+    req.user = decoded; // Optional, if you need user info later
     next();
   } catch (err) {
-    return res.status(401).send('Invalid token');
+    console.error('JWT verification failed:', err);
+    res.status(403).send('Invalid or expired token');
   }
-};
+}
 
 
 const pool = new Pool({
@@ -179,4 +182,8 @@ router.get('/user/:id/lookups', async (req, res) => {
   }
 });
 
-module.exports = router;
+module.exports = {
+  router,
+  authenticateToken,
+  isAdmin // 👈 this line matters!
+};
