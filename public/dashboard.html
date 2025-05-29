@@ -85,6 +85,7 @@
   </main>
 
   <script>
+    
     function getCookie(name) {
       const value = `; ${document.cookie}`;
       const parts = value.split(`; ${name}=`);
@@ -185,6 +186,15 @@
       }
     }
 
+    function decodeJWT(token) {
+      try {
+        return JSON.parse(atob(token.split('.')[1]));
+      } catch (err) {
+        console.warn('Failed to decode JWT:', err);
+        return null;
+      }
+    }
+    
     document.addEventListener('DOMContentLoaded', async () => {
       await fetchLookups();
 
