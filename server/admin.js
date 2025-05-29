@@ -6,8 +6,6 @@ const { sendAccountUpdateEmail } = require('./utils/email');
 require('dotenv').config();
 
 
-const jwt = require('jsonwebtoken');
-
 function isAdmin(req, res, next) {
   const token = req.cookies.token;
 
