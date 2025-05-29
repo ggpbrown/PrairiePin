@@ -85,13 +85,20 @@
   </main>
 
   <script>
-
     function getCookie(name) {
       const value = `; ${document.cookie}`;
       const parts = value.split(`; ${name}=`);
       if (parts.length === 2) return parts.pop().split(';').shift();
       return null;
-}
+    }
+
+    function decodeJWT(token) {
+      try {
+        return JSON.parse(atob(token.split('.')[1]));
+      } catch {
+        return null;
+      }
+    }
 
     function logout() {
       document.cookie = "token=; Max-Age=0; path=/";
@@ -102,7 +109,6 @@
       const lld = document.getElementById('lld').value;
       const region = document.querySelector('input[name="region"]:checked')?.value || 'TC';
 
-      // ✨ Pattern matching
       const isPLSS = /^[Tt]\d+[NS]\s*[Rr]\d+[EW]\s*(Sec\s*\d+)?/.test(lld);
       const isDLS = /^([NSWE]{1,2}-)?\d{1,2}-\d{1,2}-\d{1,2}-W\d/.test(lld);
 
@@ -111,7 +117,6 @@
           `Sparky thinks this might be a ${region === 'TC' ? 'U.S.' : 'Canadian'} location.\n` +
           `Want to switch to ${region === 'TC' ? 'USA 🇺🇸' : 'Canada 🇨🇦'} before searching?`
         );
-
         if (wantsToSwitch) {
           document.querySelector(`input[name="region"][value="${region === 'TC' ? 'TA' : 'TC'}"]`).checked = true;
           return;
@@ -183,8 +188,21 @@
     document.addEventListener('DOMContentLoaded', async () => {
       await fetchLookups();
 
-      // Optional: You can add a /me route later and fetch user info here
-      // to show "Welcome back, [firstName]!" if you like.
+      const token = getCookie('token');
+      const decoded = decodeJWT(token);
+
+      if (decoded?.firstName) {
+        document.getElementById('greeting').textContent = `Welcome back, ${decoded.firstName}!`;
+      }
+
+      if (decoded?.isAdmin) {
+        const link = document.createElement('a');
+        link.href = 'https://prairiepin-production.up.railway.app/admin';
+        link.target = '_self';
+        link.textContent = 'Admin Tools';
+        link.className = 'text-sm text-blue-600 underline';
+        document.querySelector('header .flex').prepend(link);
+      }
     });
   </script>
 </body>
