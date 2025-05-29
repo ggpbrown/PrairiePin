@@ -118,7 +118,25 @@ function authenticateToken(req, res, next) {
   });
 }
 
+// ✅ Add this in auth.js
+function isAdmin(req, res, next) {
+  const token = req.cookies.token;
+
+  if (!token) return res.status(401).send('Unauthorized');
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    if (!decoded.isAdmin) return res.status(403).send('Forbidden');
+    req.user = decoded; // Optional, if needed later
+    next();
+  } catch (err) {
+    console.error('JWT verification failed:', err);
+    res.status(403).send('Invalid or expired token');
+  }
+}
+
 module.exports = {
   router,
-  authenticateToken
+  authenticateToken,
+  isAdmin
 };
