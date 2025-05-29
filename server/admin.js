@@ -3,6 +3,7 @@ const router = express.Router();
 const { Pool } = require('pg');
 const jwt = require('jsonwebtoken');
 const { sendAccountUpdateEmail } = require('./utils/email');
+const { authenticateToken, isAdmin } = require('./auth');
 require('dotenv').config();
 
 
