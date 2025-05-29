@@ -165,8 +165,4 @@ router.get('/user/:id/lookups', async (req, res) => {
   }
 });
 
-module.exports = {
-  router,
-  authenticateToken,
-  isAdmin // 👈 this line matters!
-};
+module.exports = router;
