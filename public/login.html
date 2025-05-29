@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login - PrairiePin</title>
+  <title>Login – PrairiePin</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -14,7 +14,7 @@
             accent: '#8cc084',
             softgreen: '#F1FDF4',
             softgray: '#F5F6F8',
-            steel: '#91a2a8',
+            steel: '#91a2a8'
           }
         }
       }
@@ -23,18 +23,23 @@
 </head>
 <body class="bg-softgray min-h-screen flex items-center justify-center">
   <main class="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
-    <div class="mb-6 text-center">
-      <h1 class="text-3xl font-bold text-primary">PrairiePin</h1>
-      <p class="text-sm text-steel">Because the grid doesn't have street signs.</p>
-    </div>
+    <h1 class="text-2xl font-bold text-primary mb-6 text-center">Welcome to PrairiePin</h1>
 
     <form id="loginForm" class="space-y-4">
-      <input type="email" id="email" placeholder="Email" required class="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-accent"/>
-      <input type="password" id="password" placeholder="Password" required class="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-accent"/>
-      <button type="submit" class="bg-primary w-full text-white py-2 rounded hover:bg-green-800">Login</button>
-    </form>
+      <div>
+        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+        <input type="email" id="email" name="email" required class="mt-1 block w-full border border-gray-300 rounded-md p-2" />
+      </div>
 
-    <p id="error" class="mt-4 text-sm text-center text-red-600 hidden">Invalid credentials. Please try again.</p>
+      <div>
+        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+        <input type="password" id="password" name="password" required class="mt-1 block w-full border border-gray-300 rounded-md p-2" />
+      </div>
+
+      <div id="error" class="text-red-600 hidden text-sm">Invalid credentials. Please try again.</div>
+
+      <button type="submit" class="w-full bg-primary text-white py-2 rounded hover:bg-green-800">Log In</button>
+    </form>
   </main>
 
   <script>
@@ -46,8 +51,8 @@
       const res = await fetch('https://prairiepin-production.up.railway.app/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-        credentials: 'include'  // 👈 Required to allow cookies across origins
+        credentials: 'include',
+        body: JSON.stringify({ email, password })
       });
 
       if (res.ok) {
