@@ -46,7 +46,7 @@
                   <td class="px-4 py-2"><%= lookup.latitude %></td>
                   <td class="px-4 py-2"><%= lookup.longitude %></td>
                   <td class="px-4 py-2"><%= lookup.province %></td>
-                  <td class="px-4 py-2"><%= new Date(lookup.created_at).toLocaleString() %></td>
+                  <td class="px-4 py-2"><%= new Date(lookup.timestamp).toLocaleString() %></td>
                 </tr>
               <% }) %>
             </tbody>
