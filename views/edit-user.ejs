@@ -6,61 +6,72 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Edit User</title>
   <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+        tailwind.config = {
+            theme: {
+            extend: {
+                colors: {
+                primary: '#1e3a8a',
+                secondary: '#6b7280',
+                accent: '#10b981',
+                background: '#f9fafb',
+                softgreen: '#d1fae5',
+                error: '#ef4444',
+                }
+            }
+            }
+        }
+        </script>
 </head>
 <body class="bg-gray-100 min-h-screen">
-  <div class="max-w-2xl mx-auto bg-white shadow-md mt-10 p-8 rounded">
-    <h1 class="text-2xl font-bold text-primary mb-6">Edit User</h1>
-
-    <form method="POST" action="/admin/user/<%= user.id %>">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label class="block text-sm font-medium">First Name</label>
-          <input type="text" name="first_name" value="<%= user.first_name %>" class="w-full border border-gray-300 rounded p-2">
+    <header class="bg-softgreen shadow-md p-4 flex justify-between items-center">
+        <h1 class="text-2xl font-bold text-primary">Edit User</h1>
+        <div class="space-x-4">
+            <a href="/admin" class="text-blue-600 hover:underline">← Back to Admin</a>
+            <a href="/logout" class="text-red-600 hover:underline">Logout</a>
         </div>
+    </header>
+  <main class="max-w-xl mx-auto mt-10 p-6 bg-white shadow rounded-lg">
+  <form action="/admin/user/<%= user.id %>/edit" method="POST" class="space-y-4">
 
-        <div>
-          <label class="block text-sm font-medium">Last Name</label>
-          <input type="text" name="last_name" value="<%= user.last_name %>" class="w-full border border-gray-300 rounded p-2">
-        </div>
+    <div>
+      <label class="block text-sm font-medium text-gray-700">First Name</label>
+      <input type="text" name="first_name" value="<%= user.first_name %>"
+        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-accent focus:border-accent" />
+    </div>
 
-        <div class="md:col-span-2">
-          <label class="block text-sm font-medium">Email</label>
-          <input type="email" name="email" value="<%= user.email %>" class="w-full border border-gray-300 rounded p-2">
-        </div>
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Last Name</label>
+      <input type="text" name="last_name" value="<%= user.last_name %>"
+        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-accent focus:border-accent" />
+    </div>
 
-        <div>
-          <label class="block text-sm font-medium">City</label>
-          <input type="text" name="city" value="<%= user.city || '' %>" class="w-full border border-gray-300 rounded p-2">
-        </div>
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Email</label>
+      <input type="email" name="email" value="<%= user.email %>"
+        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-accent focus:border-accent" />
+    </div>
 
-        <div>
-          <label class="block text-sm font-medium">Province/State</label>
-          <input type="text" name="province_state" value="<%= user.province_state || '' %>" class="w-full border border-gray-300 rounded p-2">
-        </div>
-
-        <div class="md:col-span-2">
-          <label class="inline-flex items-center">
-            <input type="checkbox" name="is_admin" value="true" <% if (user.is_admin) { %>checked<% } %> class="mr-2">
-            Admin User
-          </label>
-        </div>
-
-        <div class="md:col-span-2">
-          <label class="block text-sm font-medium">New Password</label>
-          <input type="password" name="password" class="w-full border border-gray-300 rounded p-2">
-        </div>
-
-        <div class="md:col-span-2">
-          <label class="block text-sm font-medium">Confirm New Password</label>
-          <input type="password" name="confirm_password" class="w-full border border-gray-300 rounded p-2">
-        </div>
+    <div class="flex space-x-4">
+      <div class="flex-1">
+        <label class="block text-sm font-medium text-gray-700">New Password</label>
+        <input type="password" name="password"
+          class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-accent focus:border-accent" />
       </div>
-
-      <div class="mt-6 flex justify-between items-center">
-        <a href="/admin" class="text-blue-600 hover:underline">← Cancel</a>
-        <button type="submit" class="bg-accent text-white font-medium px-6 py-2 rounded hover:bg-green-700 transition">Save Changes</button>
+      <div class="flex-1">
+        <label class="block text-sm font-medium text-gray-700">Confirm Password</label>
+        <input type="password" name="confirm_password"
+          class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-accent focus:border-accent" />
       </div>
-    </form>
-  </div>
+    </div>
+
+    <div class="pt-4">
+      <button type="submit"
+        class="bg-accent text-white px-4 py-2 rounded hover:bg-green-700 transition font-medium">
+        Update User
+      </button>
+    </div>
+  </form>
+</main>
 </body>
 </html>
