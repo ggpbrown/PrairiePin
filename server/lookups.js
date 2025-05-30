@@ -29,11 +29,8 @@ router.get('/lookups', async (req, res) => {
       [userId]
     );
 
-    return res.render('user-profile', {
-      user: userResult.rows[0],
-      lookups: lookupsResult.rows
-    });
-    
+    res.json({ lookups: result.rows });
+
   } catch (err) {
     console.error("Error verifying token or querying lookups:", err);
     res.status(401).json({ error: 'Invalid or expired token' });
