@@ -83,8 +83,10 @@ router.get('/user/:id', isAdmin, async (req, res) => {
     });
     */
 
-  return res.json({ user: userResult.rows[0], lookups: lookupsResult.rows });
-
+    return res.render('user-profile', {
+      user: userResult.rows[0],
+      lookups: lookupsResult.rows
+    });
 
   } catch (err) {
     console.error('🔥 Error loading user profile route:', err.message);
