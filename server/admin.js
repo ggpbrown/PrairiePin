@@ -46,15 +46,19 @@ router.get('/users', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 // 🛠️ GET /admin/user/:id/edit
 router.get('/user/:id/edit', isAdmin, async (req, res) => {
   const userId = req.params.id;
 
   try {
-    const userResult = await pool.query(
-      'SELECT id, first_name, last_name, email, city, province_state, is_admin FROM users WHERE id = $1',
-      [userId]
-    );
+    // Replace existing user query in GET /admin/user/:id/edit
+// Replace existing user query in GET /admin/user/:id/edit
+    const userResult = await pool.query(`
+      SELECT id, first_name, last_name, email, address1, address2, country, is_admin
+      FROM users
+      WHERE id = $1
+    `, [userId]);
 
     if (userResult.rows.length === 0) {
       return res.status(404).send('User not found');
@@ -64,6 +68,75 @@ router.get('/user/:id/edit', isAdmin, async (req, res) => {
 
   } catch (err) {
     console.error('🔥 Error loading edit user page:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+// ✅ POST /admin/user/:id/edit – handle admin updates
+router.post('/user/:id/edit', isAdmin, async (req, res) => {
+  const userId = req.params.id;
+  const {
+    first_name,
+    last_name,
+    email,
+    city,
+    province_state,
+    is_admin,
+    password,
+    confirm_password
+  } = req.body;
+
+  try {
+    // ✅ Optional password validation
+    if (password && password !== confirm_password) {
+      return res.status(400).send('Passwords do not match.');
+    }
+
+    let updateFields = [
+      first_name,
+      last_name,
+      email,
+      city,
+      province_state,
+      is_admin,
+      userId
+    ];
+
+    let updateQuery = `
+      UPDATE users SET
+        first_name = $1,
+        last_name = $2,
+        email = $3,
+        city = $4,
+        province_state = $5,
+        is_admin = $6
+      WHERE id = $7
+    `;
+
+    // ✅ If password was changed, hash and update
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      updateQuery = `
+        UPDATE users SET
+          first_name = $1,
+          last_name = $2,
+          email = $3,
+          city = $4,
+          province_state = $5,
+          is_admin = $6,
+          password_hash = $8
+        WHERE id = $7
+      `;
+      updateFields.splice(6, 0, hashedPassword); // insert before userId
+    }
+
+    await pool.query(updateQuery, updateFields);
+
+    await sendAccountUpdateEmail(email, first_name);
+
+    res.redirect(`/admin/user/${userId}`);
+  } catch (err) {
+    console.error('🔥 Error updating user:', err);
     res.status(500).send('Server error');
   }
 });
@@ -138,19 +211,31 @@ router.post('/user/:id', async (req, res) => {
     }
 
     const userId = req.params.id;
-    const { first_name, last_name, email, city, province_state, is_admin } = req.body;
+    const { first_name, last_name, email, address1, address2, country, is_admin, password } = req.body;
 
-    await pool.query(
-      `UPDATE users SET
-         first_name = $1,
-         last_name = $2,
-         email = $3,
-         city = $4,
-         province_state = $5,
-         is_admin = $6
-       WHERE id = $7`,
-      [first_name, last_name, email, city, province_state, is_admin, userId]
-    );
+    await pool.query(`
+      UPDATE users
+      SET first_name = $1,
+          last_name = $2,
+          email = $3,
+          address1 = $4,
+          address2 = $5,
+          country = $6,
+          is_admin = $7,
+          password = COALESCE($8, password),
+          last_updated = NOW()
+      WHERE id = $9
+    `, [
+      first_name,
+      last_name,
+      email,
+      address1,
+      address2,
+      country,
+      is_admin === 'on', // checkbox returns "on" if checked
+      hashedPassword || null,
+      userId
+    ]);
 
     await sendAccountUpdateEmail(email, first_name);
 
