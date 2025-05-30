@@ -55,7 +55,7 @@ router.get('/user/:id/edit', isAdmin, async (req, res) => {
     // Replace existing user query in GET /admin/user/:id/edit
 // Replace existing user query in GET /admin/user/:id/edit
     const userResult = await pool.query(`
-      SELECT id, first_name, last_name, email, address1, address2, country, is_admin
+      SELECT id, first_name, last_name, email, address_line1, address_line2, country, is_admin
       FROM users
       WHERE id = $1
     `, [userId]);
