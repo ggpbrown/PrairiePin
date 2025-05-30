@@ -54,7 +54,7 @@ router.get('/user/:id', isAdmin, async (req, res) => {
 
   try {
     const userResult = await pool.query(`
-      SELECT id, first_name, last_name, email, created_at, last_login
+      SELECT id, first_name, last_name, email, last_login
       FROM users
       WHERE id = $1
     `, [userId]);
