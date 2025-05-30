@@ -46,6 +46,27 @@ router.get('/users', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+// 🛠️ GET /admin/user/:id/edit
+router.get('/user/:id/edit', isAdmin, async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    const userResult = await pool.query(
+      'SELECT id, first_name, last_name, email, city, province_state, is_admin FROM users WHERE id = $1',
+      [userId]
+    );
+
+    if (userResult.rows.length === 0) {
+      return res.status(404).send('User not found');
+    }
+
+    res.render('edit-user', { user: userResult.rows[0] });
+
+  } catch (err) {
+    console.error('🔥 Error loading edit user page:', err);
+    res.status(500).send('Server error');
+  }
+});
 
 // 👤 GET /admin/user/:id
 router.get('/user/:id', isAdmin, async (req, res) => {
