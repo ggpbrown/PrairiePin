@@ -211,15 +211,15 @@ router.post('/user/:id', async (req, res) => {
     }
 
     const userId = req.params.id;
-    const { first_name, last_name, email, address1, address2, country, is_admin, password } = req.body;
+    const { first_name, last_name, email, address_line1, address_line2, country, is_admin, password } = req.body;
 
     await pool.query(`
       UPDATE users
       SET first_name = $1,
           last_name = $2,
           email = $3,
-          address1 = $4,
-          address2 = $5,
+          address_line1 = $4,
+          address_line2 = $5,
           country = $6,
           is_admin = $7,
           password = COALESCE($8, password),
@@ -229,8 +229,8 @@ router.post('/user/:id', async (req, res) => {
       first_name,
       last_name,
       email,
-      address1,
-      address2,
+      address_line1,
+      address_line2,
       country,
       is_admin === 'on', // checkbox returns "on" if checked
       hashedPassword || null,
