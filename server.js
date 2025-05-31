@@ -1,6 +1,5 @@
 // 📦 Core Dependencies
 const express = require('express');
-const app = express();
 const fetch = require('node-fetch');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
