@@ -1,5 +1,6 @@
 // 📦 Core Dependencies
 const express = require('express');
+const app = express();
 const fetch = require('node-fetch');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
@@ -35,7 +36,12 @@ app.use(cors({
   credentials: true
 }));
 
+// Parse URL-encoded form data (needed for HTML forms!)
+app.use(express.urlencoded({ extended: true }));
+
+// Parse JSON bodies (needed for API endpoints using fetch/Axios)
 app.use(express.json());
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 // 🔌 Route Mounting
