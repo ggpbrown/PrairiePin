@@ -234,7 +234,7 @@ router.post('/user/:id', async (req, res) => {
       address_line1,
       address_line2,
       city,
-      postal_code
+      postal_code,
       country,
       is_admin === 'on', // checkbox returns "on" if checked
       hashedPassword || null,
