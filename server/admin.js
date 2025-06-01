@@ -55,7 +55,7 @@ router.get('/user/:id/edit', isAdmin, async (req, res) => {
     // Replace existing user query in GET /admin/user/:id/edit
 // Replace existing user query in GET /admin/user/:id/edit
     const userResult = await pool.query(`
-      SELECT id, first_name, last_name, email, address_line1, address_line2, city, postal_code, country, is_admin
+      SELECT id, first_name, last_name, email, address_line1, address_line2, city, province_state, postal_code, country, is_admin
       FROM users
       WHERE id = $1
     `, [userId]);
@@ -211,7 +211,7 @@ router.post('/user/:id', async (req, res) => {
     }
 
     const userId = req.params.id;
-    const { first_name, last_name, email, address_line1, address_line2, city, postal_code, country, is_admin, password } = req.body;
+    const { first_name, last_name, email, address_line1, address_line2, city, province_state, postal_code, country, is_admin, password } = req.body;
 
     await pool.query(`
       UPDATE users
@@ -221,12 +221,13 @@ router.post('/user/:id', async (req, res) => {
           address_line1 = $4,
           address_line2 = $5,
           city = $6,
-          postal_code = $7,
-          country = $8,
-          is_admin = $9,
-          password = COALESCE($10, password),
+          province_state = $7, 
+          postal_code = $8,
+          country = $9,
+          is_admin = $10,
+          password = COALESCE($11, password),
           last_updated = NOW()
-      WHERE id = $11
+      WHERE id = $12
     `, [
       first_name,
       last_name,
