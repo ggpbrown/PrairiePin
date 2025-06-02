@@ -135,8 +135,19 @@ function isAdmin(req, res, next) {
   }
 }
 
+// Logout route to clear the auth cookie and redirect
+router.get('/logout', (req, res) => {
+  res.clearCookie('token', {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'None'
+  });
+  res.redirect('/login.html');
+});
+
 module.exports = {
   router,
   authenticateToken,
   isAdmin
 };
+
