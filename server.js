@@ -222,6 +222,10 @@ app.post('/convert-ta', async (req, res) => {
   }
 });
 
+app.get('/profile', authenticateToken, (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/user-profile.html'));
+});
+
 // 🚦 Start Server
 app.listen(PORT, () => {
   console.log(`🚀 Server listening on port ${PORT}`);

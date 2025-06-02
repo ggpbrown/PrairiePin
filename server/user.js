@@ -66,8 +66,6 @@ router.put('/me', async (req, res) => {
 
 const path = require('path'); // Make sure this is at the top if not already
 
-app.get('/profile', authenticateToken, (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/user-profile.html'));
-});
+
 
 module.exports = { router };
