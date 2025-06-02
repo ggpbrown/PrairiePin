@@ -4,6 +4,7 @@ const { Pool } = require('pg');
 const jwt = require('jsonwebtoken');
 const { sendAccountUpdateEmail } = require('./utils/email');
 const { authenticateToken, isAdmin } = require('./auth');
+const bcrypt = require('bcryptjs');
 require('dotenv').config();
 
 
@@ -13,7 +14,7 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false }
 });
 
-// ✅ Get all users for admin dashboard
+// ✅ Get all users for displaying on admin dashboard main page
 router.get('/users', async (req, res) => {
   const authHeader = req.headers.authorization;
   if (!authHeader?.startsWith('Bearer ')) {
@@ -47,7 +48,8 @@ router.get('/users', async (req, res) => {
   }
 });
 
-// 🛠️ GET /admin/user/:id/edit
+// ✅ GET data to populate the Edit User form with existing user info
+// 
 router.get('/user/:id/edit', isAdmin, async (req, res) => {
   const userId = req.params.id;
 
@@ -96,8 +98,12 @@ router.post('/user/:id/edit', isAdmin, async (req, res) => {
       first_name,
       last_name,
       email,
+      address_line1,
+      address_line2,
       city,
       province_state,
+      postal_code,
+      country,
       is_admin,
       userId
     ];
@@ -107,10 +113,14 @@ router.post('/user/:id/edit', isAdmin, async (req, res) => {
         first_name = $1,
         last_name = $2,
         email = $3,
-        city = $4,
-        province_state = $5,
-        is_admin = $6
-      WHERE id = $7
+        address_line1 = $4,
+        address_line2 = $5,
+        city = $6,
+        province_state = $7,
+        postal_code = $8,
+        country = $9,
+        is_admin = $10
+      WHERE id = $11
     `;
 
     // ✅ If password was changed, hash and update
@@ -121,11 +131,14 @@ router.post('/user/:id/edit', isAdmin, async (req, res) => {
           first_name = $1,
           last_name = $2,
           email = $3,
-          city = $4,
-          province_state = $5,
-          is_admin = $6,
-          password_hash = $8
-        WHERE id = $7
+          address_line1 = $4,
+          address_line2 = $5,
+          city = $6,
+          province_state = $7,
+          postal_code = $8,
+          country = $9,
+          is_admin = $10
+        WHERE id = $11
       `;
       updateFields.splice(6, 0, hashedPassword); // insert before userId
     }
@@ -141,6 +154,7 @@ router.post('/user/:id/edit', isAdmin, async (req, res) => {
   }
 });
 
+// Get basic info for top of User Profile page and recent lookups
 // 👤 GET /admin/user/:id
 router.get('/user/:id', isAdmin, async (req, res) => {
   const userId = req.params.id;
