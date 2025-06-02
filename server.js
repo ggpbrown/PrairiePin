@@ -7,7 +7,7 @@ const cookieParser = require('cookie-parser');
 const { Pool } = require('pg');
 require('dotenv').config();
 const path = require('path');
-
+const { authenticateToken } = require('./server/auth');
 
 // 🧩 Route Modules
 const { router: authRoutes } = require('./server/auth');
@@ -222,6 +222,10 @@ app.post('/convert-ta', async (req, res) => {
   }
 });
 
+// 📍 Route: Edit User Profile page
+app.get('/profile', authenticateToken, (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/user-profile.html'));
+});
 
 // 🚦 Start Server
 app.listen(PORT, () => {
