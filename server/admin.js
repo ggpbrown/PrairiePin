@@ -142,7 +142,7 @@ router.post('/user/:id/edit', isAdmin, async (req, res) => {
           postal_code = $8,
           country = $9,
           is_admin = $10,
-          password = $11
+          password_hash = $11
         WHERE id = $12
       `;
       updateFields.splice(10, 0, hashedPassword); // insert password before userId
