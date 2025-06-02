@@ -5,6 +5,8 @@ const jwt = require('jsonwebtoken');
 const { sendAccountUpdateEmail } = require('./utils/email');
 const { authenticateToken, isAdmin } = require('./auth');
 const bcrypt = require('bcryptjs');
+const path = require('path'); // Make sure this is at the top if not already
+
 require('dotenv').config();
 
 
@@ -12,6 +14,10 @@ require('dotenv').config();
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false }
+});
+
+app.get('/profile', authenticateToken, (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/user-profile.html'));
 });
 
 // ✅ Get all users for displaying on admin dashboard main page
