@@ -81,8 +81,12 @@ router.post('/user/:id/edit', isAdmin, async (req, res) => {
     first_name,
     last_name,
     email,
+    address_line1,
+    address_line2,
     city,
     province_state,
+    postal_code,
+    country,
     is_admin,
     password,
     confirm_password
