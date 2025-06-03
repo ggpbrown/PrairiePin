@@ -107,11 +107,13 @@ res.status(200).json({ success: true });
 
 function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]; // Bearer <token>
+  const tokenFromHeader = authHeader && authHeader.split(' ')[1];
+  const tokenFromCookie = req.cookies?.token;
+  const token = tokenFromHeader || tokenFromCookie;
 
   if (!token) return res.sendStatus(401);
 
-  jwt.verify(token, JWT_SECRET, (err, user) => {
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
     if (err) return res.sendStatus(403);
     req.user = user;
     next();
