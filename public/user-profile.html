@@ -61,12 +61,11 @@
   }
 
   async function fetchUserProfile() {
-    const token = localStorage.getItem('token');
-    if (!token) return window.location.href = '/login.html';
 
     try {
       const response = await fetch('https://prairiepin-production.up.railway.app/me', {
-        headers: { 'Authorization': `Bearer ${token}` }
+        method: 'GET',
+        credentials: 'include'
       });
       const data = await response.json();
 
@@ -96,11 +95,11 @@
     };
 
     try {
-      const res = await fetch('https://prairiepin-production.up.railway.app/me', {
+      cconst res = await fetch('https://prairiepin-production.up.railway.app/me', {
         method: 'PUT',
+        credentials: 'include',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(payload)
       });
