@@ -1,0 +1,122 @@
+<!-- views/user-profile.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile</title>
+  <link href="/styles/tailwind.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+  <main class="max-w-xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
+    <h1 class="text-2xl font-bold mb-6 text-center">My Profile</h1>
+
+    <form id="profileForm" class="space-y-4">
+      <div>
+        <label for="first_name" class="block font-semibold">First Name</label>
+        <input type="text" id="first_name" class="w-full border border-gray-300 rounded px-3 py-2">
+      </div>
+      <div>
+        <label for="last_name" class="block font-semibold">Last Name</label>
+        <input type="text" id="last_name" class="w-full border border-gray-300 rounded px-3 py-2">
+      </div>
+      <div>
+        <label for="email" class="block font-semibold">Email</label>
+        <input type="email" id="email" class="w-full border border-gray-300 rounded px-3 py-2">
+      </div>
+      <div>
+        <label for="city" class="block font-semibold">City</label>
+        <input type="text" id="city" class="w-full border border-gray-300 rounded px-3 py-2">
+      </div>
+      <div>
+        <label for="province" class="block font-semibold">Province/State</label>
+        <input type="text" id="province" class="w-full border border-gray-300 rounded px-3 py-2">
+      </div>
+
+      <hr class="my-6">
+
+      <div>
+        <label for="newPassword" class="block font-semibold">New Password</label>
+        <input type="password" id="newPassword" class="w-full border border-gray-300 rounded px-3 py-2">
+      </div>
+      <div>
+        <label for="confirmPassword" class="block font-semibold">Confirm Password</label>
+        <input type="password" id="confirmPassword" class="w-full border border-gray-300 rounded px-3 py-2">
+      </div>
+
+      <p id="message" class="text-sm text-center mt-2"></p>
+
+      <div class="text-center">
+        <button type="submit" class="bg-blue-600 text-white font-semibold px-6 py-2 rounded hover:bg-blue-700">Update Profile</button>
+      </div>
+    </form>
+  </main>
+
+  <script>
+    async function fetchUserProfile() {
+      const token = localStorage.getItem('token');
+      if (!token) return window.location.href = '/login.html';
+
+      try {
+        const response = await fetch('/me', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          document.getElementById('first_name').value = data.first_name || '';
+          document.getElementById('last_name').value = data.last_name || '';
+          document.getElementById('email').value = data.email || '';
+          document.getElementById('city').value = data.city || '';
+          document.getElementById('province').value = data.province_state || '';
+        } else {
+          console.error('Unauthorized');
+          window.location.href = '/login.html';
+        }
+      } catch (err) {
+        console.error('Error fetching profile:', err);
+      }
+    }
+
+    async function handleProfileUpdate(e) {
+      e.preventDefault();
+      const token = localStorage.getItem('token');
+
+      const payload = {
+        first_name: document.getElementById('first_name').value,
+        last_name: document.getElementById('last_name').value,
+        email: document.getElementById('email').value,
+        city: document.getElementById('city').value,
+        province: document.getElementById('province').value,
+        newPassword: document.getElementById('newPassword').value,
+        confirmPassword: document.getElementById('confirmPassword').value
+      };
+
+      try {
+        const res = await fetch('/me', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const msg = document.getElementById('message');
+        if (res.ok) {
+          msg.textContent = '✅ Profile updated successfully!';
+          msg.className = 'text-green-600 text-center';
+        } else {
+          msg.textContent = '❌ Error updating profile.';
+          msg.className = 'text-red-600 text-center';
+        }
+      } catch (err) {
+        console.error('Update failed:', err);
+      }
+    }
+
+    document.getElementById('profileForm').addEventListener('submit', handleProfileUpdate);
+    window.addEventListener('DOMContentLoaded', fetchUserProfile);
+  </script>
+</body>
+</html>
