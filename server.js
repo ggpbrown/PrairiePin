@@ -79,6 +79,10 @@ res.render('admin', { users: users.rows });
   }
 });
 
+// Route: Retrieve User Profile
+app.get('/my-profile', authenticateToken, (req, res) => {
+  res.render('my-profile', { currentUser: req.user });
+});
 
 // 📍 Route: Convert LLD to Lat/Long
 app.post('/convert', async (req, res) => {
