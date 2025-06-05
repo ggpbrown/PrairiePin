@@ -54,33 +54,30 @@
 
   <script>
     async function fetchUserProfile() {
-      const token = localStorage.getItem('token');
-      if (!token) return window.location.href = '/login.html';
+  try {
+    const response = await fetch('/me', {
+      credentials: 'include'
+    });
 
-      try {
-        const response = await fetch('/me', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          document.getElementById('first_name').value = data.first_name || '';
-          document.getElementById('last_name').value = data.last_name || '';
-          document.getElementById('email').value = data.email || '';
-          document.getElementById('city').value = data.city || '';
-          document.getElementById('province').value = data.province_state || '';
-        } else {
-          console.error('Unauthorized');
-          window.location.href = '/login.html';
-        }
-      } catch (err) {
-        console.error('Error fetching profile:', err);
-      }
+    if (response.ok) {
+      const data = await response.json();
+      document.getElementById('first_name').value = data.first_name || '';
+      document.getElementById('last_name').value = data.last_name || '';
+      document.getElementById('email').value = data.email || '';
+      document.getElementById('city').value = data.city || '';
+      document.getElementById('province').value = data.province_state || '';
+    } else {
+      console.error('Unauthorized, redirecting...');
+      window.location.href = '/login.html';
     }
+  } catch (err) {
+    console.error('Error fetching profile:', err);
+  }
+}
 
     async function handleProfileUpdate(e) {
       e.preventDefault();
-      const token = localStorage.getItem('token');
+      //const token = localStorage.getItem('token');
 
       const payload = {
         first_name: document.getElementById('first_name').value,
