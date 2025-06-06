@@ -82,6 +82,7 @@ res.render('admin', { users: users.rows });
 // Route: Retrieve User Profile
 app.get('/my-profile', authenticateToken, async (req, res) => {
   try {
+    console.log("🔐 Access granted to /my-profile for user:", req.user?.userId);
     const userId = req.user.userId;
     const result = await pool.query(
       'SELECT first_name, last_name, email FROM users WHERE id = $1',
