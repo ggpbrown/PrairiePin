@@ -25,10 +25,14 @@
 <body class="bg-gray-100">
 
     <header class="bg-softgreen p-4 shadow flex justify-between items-center">
-    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-        <a href="/dashboard.html" class="text-blue-600 hover:underline font-medium">← Back to Dashboard</a>
-        <a href="#" onclick="logout()" class="text-red-600 hover:underline font-medium">Logout</a>
-    </div>
+        <div>
+        <h1 class="text-2xl font-bold text-primary">PrairiePin</h1>
+        <p class="text-sm text-steel">Because the grid doesn't have street signs.</p>
+        </div>
+        <div class="flex gap-4">
+        <a href="/my-profile" class="text-sm text-blue-600 underline">My Profile</a>
+        <a href="#" onclick="logout()" class="bg-red-600 text-white px-4 py-1 rounded hover:bg-red-700 text-sm">Logout</a>
+        </div>
     </header>
 
   <main class="max-w-xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
