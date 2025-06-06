@@ -80,8 +80,24 @@ res.render('admin', { users: users.rows });
 });
 
 // Route: Retrieve User Profile
-app.get('/my-profile', authenticateToken, (req, res) => {
-  res.render('my-profile', { currentUser: req.user });
+app.get('/my-profile', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const result = await pool.query(
+      'SELECT first_name, last_name, email FROM users WHERE id = $1',
+      [userId]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).send("User not found");
+    }
+
+    const user = result.rows[0];
+    res.render('my-profile', { currentUser: user });
+  } catch (err) {
+    console.error("Error loading user profile:", err);
+    res.status(500).send("Error loading profile.");
+  }
 });
 
 // 📍 Route: Convert LLD to Lat/Long
