@@ -8,6 +8,14 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100">
+
+    <header class="bg-white shadow">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+        <a href="/dashboard.html" class="text-blue-600 hover:underline font-medium">← Back to Dashboard</a>
+        <a href="#" onclick="logout()" class="text-red-600 hover:underline font-medium">Logout</a>
+    </div>
+    </header>
+
   <main class="max-w-xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
     <h1 class="text-2xl font-bold mb-6 text-center">My Profile</h1>
 
@@ -115,5 +123,13 @@
     document.getElementById('profileForm').addEventListener('submit', handleProfileUpdate);
     window.addEventListener('DOMContentLoaded', fetchUserProfile);
   </script>
+  
+  <script>
+    function logout() {
+        localStorage.removeItem('token'); // Optional if you're not using this anymore
+        document.cookie = "token=; Max-Age=0; path=/"; // Clear the auth cookie
+        window.location.href = '/login.html';
+    }
+    </script>
 </body>
 </html>
