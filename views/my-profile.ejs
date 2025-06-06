@@ -6,10 +6,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Profile</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#085e46',
+            accent: '#8cc084',
+            softgreen: '#F1FDF4',
+            softgray: '#F5F6F8',
+            steel: '#91a2a8'
+          }
+        }
+      }
+    }
+  </script>
 </head>
 <body class="bg-gray-100">
 
-    <header class="bg-white shadow">
+    <header class="bg-softgreen p-4 shadow flex justify-between items-center">
     <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
         <a href="/dashboard.html" class="text-blue-600 hover:underline font-medium">← Back to Dashboard</a>
         <a href="#" onclick="logout()" class="text-red-600 hover:underline font-medium">Logout</a>
