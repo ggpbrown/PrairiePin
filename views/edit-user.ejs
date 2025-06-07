@@ -38,60 +38,32 @@
   <main class="max-w-xl mx-auto mt-10 p-6 bg-white shadow rounded-lg">
   <form action="/admin/user/<%= user.id %>/edit" method="POST" class="space-y-4">
 
-    <div>
+    <div class="mb-4">
       <label class="block font-semibold">First Name</label>
       <input type="text" name="first_name" value="<%= user.first_name %>" class="w-full border border-gray-300 rounded px-3 py-2"
     </div>
 
-    <div>
+    <div class="mb-4">
       <label class="block font-semibold">Last Name</label>
       <input type="text" name="last_name" value="<%= user.last_name %>" class="w-full border border-gray-300 rounded px-3 py-2">
     </div>
 
-    <div>
+    <div class="mb-4">
       <label class="block font-semibold">Email</label>
       <input type="email" name="email" value="<%= user.email %>" class="w-full border border-gray-300 rounded px-3 py-2">
     </div>
 
-    <div class="flex space-x-4">
+    <div class="flex space-x-4 mb-">
       <div class="flex-1">
         <label class="block font-semibold">New Password</label>
         <input type="password" name="password" class="w-full border border-gray-300 rounded px-3 py-2">
       </div>
-      <div class="flex-1">
+      <div class="flex-1 mb-4">
         <label class="block font-semibold">Confirm Password</label>
         <input type="password" name="confirm_password" class="w-full border border-gray-300 rounded px-3 py-2">
       </div>
     </div>
-    <div class="mb-4">
-    <label for="address1" class="block font-semibold text-primary mb-1">Address Line 1</label>
-    <input type="text" name="address_line1" id="address1" value="<%= user.address_line1 || '' %>" class="w-full border border-gray-300 rounded px-3 py-2">
-    </div>
-
-    <div class="mb-4">
-    <label for="address2" class="block font-semibold text-primary mb-1">Address Line 2</label>
-    <input type="text" name="address_line2" id="address2" value="<%= user.address_line2 || '' %>" class="w-full border border-gray-300 rounded px-3 py-2">
-    </div>
-
-    <div class="mb-4">
-    <label for="city" class="block font-semibold text-primary mb-1">City</label>
-    <input type="text" name="city" id="city" value="<%= user.city || '' %>" class="w-full border border-gray-300 rounded px-3 py-2">
-    </div>
-
-    <div class="mb-4">
-    <label for="province_state" class="block font-semibold text-primary mb-1">Province</label>
-    <input type="text" name="province_state" id="province_state" value="<%= user.province_state || '' %>" class="w-full border border-gray-300 rounded px-3 py-2">
-    </div>
-
-    <div class="mb-4">
-    <label for="postal_code" class="block font-semibold text-primary mb-1">Postal Code</label>
-    <input type="text" name="postal_code" id="postal_code" value="<%= user.postal_code || '' %>" class="w-full border border-gray-300 rounded px-3 py-2">
-    </div>
-
-    <div class="mb-4">
-    <label for="country" class="block font-semibold text-primary mb-1">Country</label>
-    <input type="text" name="country" id="country" value="<%= user.country || '' %>" class="w-full border border-gray-300 rounded px-3 py-2">
-    </div>
+    
 
     <div class="mb-4">
     <label for="is_admin" class="block font-semibold text-primary mb-1">Admin Privileges</label>
