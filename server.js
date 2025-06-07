@@ -121,7 +121,7 @@ app.put('/my-profile', authenticateToken, async (req, res) => {
     if (newPassword) {
       const hashed = await bcrypt.hash(newPassword, 10);
       updates.push(hashed);
-      query += `, password = $4`;
+      query += `, password_hash = $4`;
     }
 
     query += `, last_updated = NOW() WHERE id = $${updates.length + 1} RETURNING *`;
