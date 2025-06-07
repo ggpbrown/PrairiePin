@@ -39,27 +39,27 @@
   <form action="/admin/user/<%= user.id %>/edit" method="POST" class="space-y-4">
 
     <div>
-      <label class="block text-sm font-medium text-gray-700">First Name</label>
+      <label class="block font-semibold">First Name</label>
       <input type="text" name="first_name" value="<%= user.first_name %>" class="w-full border border-gray-300 rounded px-3 py-2"
     </div>
 
     <div>
-      <label class="block text-sm font-medium text-gray-700">Last Name</label>
+      <label class="block font-semibold">Last Name</label>
       <input type="text" name="last_name" value="<%= user.last_name %>" class="w-full border border-gray-300 rounded px-3 py-2">
     </div>
 
     <div>
-      <label class="block text-sm font-medium text-gray-700">Email</label>
+      <label class="block font-semibold">Email</label>
       <input type="email" name="email" value="<%= user.email %>" class="w-full border border-gray-300 rounded px-3 py-2">
     </div>
 
     <div class="flex space-x-4">
       <div class="flex-1">
-        <label class="block text-sm font-medium text-gray-700">New Password</label>
+        <label class="block font-semibold">New Password</label>
         <input type="password" name="password" class="w-full border border-gray-300 rounded px-3 py-2">
       </div>
       <div class="flex-1">
-        <label class="block text-sm font-medium text-gray-700">Confirm Password</label>
+        <label class="block font-semibold">Confirm Password</label>
         <input type="password" name="confirm_password" class="w-full border border-gray-300 rounded px-3 py-2">
       </div>
     </div>
