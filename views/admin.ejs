@@ -28,10 +28,16 @@
 <body class="bg-softgray text-primary font-sans min-h-screen flex flex-col">
 
   <!-- Header -->
-  <header class="bg-softgreen py-4 text-center">
-    <h1 class="text-3xl font-bold text-primary">PrairiePin</h1>
-    <p class="text-steel">Because the grid doesn't have street signs.</p>
-  </header>
+  <header class="bg-softgreen p-4 shadow flex justify-between items-center">
+        <div>
+        <img src="/images/prairiepin-logo.png" alt="PrairiePin Logo" class="h-10">
+        <p class="text-sm text-steel">Because the grid doesn't have street signs.</p>
+        </div>
+        <div class="flex gap-4">
+        <a href="/dashboard.html" class="text-accent hover:underline">← Back to Dashboard</a>
+        <a href="#" onclick="logout()" class="bg-red-600 text-white px-4 py-1 rounded hover:bg-red-700 text-sm">Logout</a>
+        </div>
+    </header>
 
   <!-- Main Container -->
   <main class="flex-grow flex items-center justify-center px-4 py-10">
