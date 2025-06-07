@@ -8,6 +8,7 @@ const { Pool } = require('pg');
 require('dotenv').config();
 const path = require('path');
 const { authenticateToken } = require('./server/auth');
+const bcrypt = require('bcryptjs');
 
 // 🧩 Route Modules
 const { router: authRoutes } = require('./server/auth');
