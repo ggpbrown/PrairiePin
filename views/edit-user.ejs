@@ -11,7 +11,7 @@
             theme: {
             extend: {
                 colors: {
-                primary: '#085e46',
+                primary: '#085ecd',
                 accent: '#8cc084',
                 softgreen: '#F1FDF4',
                 softgray: '#F5F6F8',
@@ -23,13 +23,18 @@
         </script>
 </head>
 <body class="bg-gray-100 min-h-screen">
-    <header class="bg-softgreen shadow-md p-4 flex justify-between items-center">
-        <h1 class="text-2xl font-bold text-primary">Edit User</h1>
-        <div class="space-x-4">
-            <a href="/admin" class="text-blue-600 hover:underline">← Back to Admin</a>
-            <a href="/logout" class="text-red-600 hover:underline">Logout</a>
-        </div>
-    </header>
+    
+    <header class="bg-softgreen p-4 shadow flex justify-between items-center">
+    <div>
+      <img src="/images/prairiepin-logo.png" alt="PrairiePin Logo" class="h-10">
+      <p class="text-sm text-steel">Because the grid doesn't have street signs.</p>
+    </div>
+    <div class="flex gap-4">
+      <a href="/dashboard.html" class="text-accent hover:underline">← Back to Dashboard</a>
+      <a href="/admin" class="text-blue-600 hover:underline">← Back to Admin</a>
+      <a href="#" onclick="logout()" class="bg-red-600 text-white px-4 py-1 rounded hover:bg-red-700 text-sm">Logout</a>
+    </div>
+  </header>
   <main class="max-w-xl mx-auto mt-10 p-6 bg-white shadow rounded-lg">
   <form action="/admin/user/<%= user.id %>/edit" method="POST" class="space-y-4">
 
