@@ -79,28 +79,9 @@
     </form>
   </main>
 
+  
   <script>
-    async function fetchUserProfile() {
-  try {
-    const response = await fetch('/me', {
-      credentials: 'include'
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      document.getElementById('first_name').value = data.first_name || '';
-      document.getElementById('last_name').value = data.last_name || '';
-      document.getElementById('email').value = data.email || '';
-      document.getElementById('city').value = data.city || '';
-      document.getElementById('province_state').value = data.province_state || '';
-    } else {
-      console.error('Unauthorized, redirecting...');
-      window.location.href = '/login.html';
-    }
-  } catch (err) {
-    console.error('Error fetching profile:', err);
-  }
-}
+  
 
     async function handleProfileUpdate(e) {
       e.preventDefault();
@@ -140,7 +121,6 @@
     }
 
     document.getElementById('profileForm').addEventListener('submit', handleProfileUpdate);
-    window.addEventListener('DOMContentLoaded', fetchUserProfile);
   </script>
   
   <script>
