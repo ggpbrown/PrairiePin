@@ -78,5 +78,13 @@
     </div>
   </form>
 </main>
+
+<script>
+    function logout() {
+        localStorage.removeItem('token'); // Optional if you're not using this anymore
+        document.cookie = "token=; Max-Age=0; path=/"; // Clear the auth cookie
+        window.location.href = '/login.html';
+    }
+    </script>
 </body>
 </html>
