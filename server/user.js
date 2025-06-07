@@ -29,6 +29,39 @@ router.get('/me', async (req, res) => {
   }
 });
 
+app.put('/my-profile', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const { first_name, last_name, email, newPassword, confirmPassword } = req.body;
+
+    if (newPassword && newPassword !== confirmPassword) {
+      return res.status(400).json({ error: 'Passwords do not match.' });
+    }
+
+    const updates = [first_name, last_name, email];
+    let query = `
+      UPDATE users
+      SET first_name = $1,
+          last_name = $2,
+          email = $3`;
+
+    if (newPassword) {
+      const hashed = await bcrypt.hash(newPassword, 10);
+      updates.push(hashed);
+      query += `, password = $4`;
+    }
+
+    query += `, last_updated = NOW() WHERE id = $${updates.length + 1} RETURNING *`;
+    updates.push(userId);
+
+    const result = await pool.query(query, updates);
+    res.status(200).json({ message: 'Profile updated!' });
+  } catch (err) {
+    console.error('🔧 Error updating profile:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 router.put('/me', async (req, res) => {
   const token = req.cookies.token;
   if (!token) return res.status(401).json({ error: 'Missing token' });
