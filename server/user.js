@@ -30,29 +30,24 @@ router.get('/me', async (req, res) => {
 });
 
 router.put('/me', async (req, res) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader?.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'Missing token' });
-  }
+  const token = req.cookies.token;
+  if (!token) return res.status(401).json({ error: 'Missing token' });
 
   try {
-    const token = authHeader.slice(7);
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const userId = decoded.userId;
 
-    const { first_name, last_name, email, city, province } = req.body;
+    const { first_name, last_name, email, city, province_state } = req.body;
 
     const result = await pool.query(
       `UPDATE users 
        SET first_name = $1,
            last_name = $2,
            email = $3,
-           city = $4,
-           province_state = $5,
            last_updated = NOW()
-       WHERE id = $6
+       WHERE id = $4
        RETURNING *`,
-      [first_name, last_name, email, city, province, userId]
+      [first_name, last_name, email, userId]
     );
 
     console.log('🔧 Profile updated for user ID:', userId);
