@@ -188,13 +188,6 @@ router.get('/user/:id', isAdmin, async (req, res) => {
       return res.status(404).send('User not found');
     }
 
-    /*
-    res.render('user-profile', {
-      user: userResult.rows[0],
-      lookups: lookupsResult.rows
-    });
-    */
-
     return res.render('user-profile', {
       user: userResult.rows[0],
       lookups: lookupsResult.rows
