@@ -112,8 +112,8 @@ function authenticateToken(req, res, next) {
   const token = tokenFromHeader || tokenFromCookie;
 
   if (!token) {
-    console.warn("🔐 No token found in request — unauthorized access.");
-    return res.status(401).send("Unauthorized (no token)");
+    console.warn("🔐 No token found in request — redirecting to login.");
+    return res.redirect('/login.html');
   }
 
   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
