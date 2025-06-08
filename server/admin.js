@@ -218,7 +218,7 @@ router.post('/user/:id', async (req, res) => {
     );
 
     if (!adminCheck.rows[0]?.is_admin) {
-      return res.status(403).json({ error: 'Unauthorized' });
+      return res.status(403).json({ error: 'Unauthorized4' });
     }
 
     const userId = req.params.id;
@@ -281,7 +281,7 @@ router.get('/user/:id/lookups', async (req, res) => {
     );
 
     if (!adminCheck.rows[0]?.is_admin) {
-      return res.status(403).json({ error: 'Unauthorized' });
+      return res.status(403).json({ error: 'Unauthorized5' });
     }
 
     const userId = req.params.id;
