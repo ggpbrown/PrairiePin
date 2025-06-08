@@ -124,16 +124,23 @@ function authenticateToken(req, res, next) {
 function isAdmin(req, res, next) {
   const token = req.cookies.token;
 
-  if (!token) return res.status(401).send('Unauthorized');
+  if (!token) {
+    console.log("🔐 Admin route hit with no token. Redirecting to login.");
+    return res.redirect('/login.html');
+  }
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    if (!decoded.isAdmin) return res.status(403).send('Forbidden');
-    req.user = decoded; // Optional, if needed later
+    if (!decoded.isAdmin) {
+      console.warn("🔐 Non-admin tried to access admin route.");
+      return res.status(403).send('Forbidden');
+    }
+
+    req.user = decoded; // optional
     next();
   } catch (err) {
     console.error('JWT verification failed:', err);
-    res.status(403).send('Invalid or expired token');
+    return res.redirect('/login.html');
   }
 }
 
@@ -152,4 +159,3 @@ module.exports = {
   authenticateToken,
   isAdmin
 };
-
