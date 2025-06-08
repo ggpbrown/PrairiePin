@@ -111,10 +111,16 @@ function authenticateToken(req, res, next) {
   const tokenFromCookie = req.cookies?.token;
   const token = tokenFromHeader || tokenFromCookie;
 
-  if (!token) return res.sendStatus(401);
+  if (!token) {
+    console.warn("🔐 No token found in request — unauthorized access.");
+    return res.status(401).send("Unauthorized (no token)");
+  }
 
   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) return res.sendStatus(403);
+    if (err) {
+      console.error("🔐 Token verification failed — forbidden:", err.message);
+      return res.status(403).send("Unauthorized (invalid token)");
+    }
     req.user = user;
     next();
   });
