@@ -30,7 +30,7 @@ router.get('/users', async (req, res) => {
     );
 
     if (!adminCheck.rows[0]?.is_admin) {
-      return res.status(403).json({ error: 'Unauthorized' });
+      return res.status(403).json({ error: 'Unauthorized3' });
     }
 
     const users = await pool.query(`
