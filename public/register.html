@@ -60,11 +60,13 @@
         });
 
         const msg = document.getElementById('message');
+
         if (res.ok) {
           msg.textContent = '✅ Registration successful! Please login.';
           msg.className = 'text-green-600 text-center';
         } else {
-          msg.textContent = '❌ Error during registration. Please check your info.';
+          const data = await res.json();
+          msg.textContent = `❌ ${data.error || 'Error during registration. Please check your info.'}`;
           msg.className = 'text-red-600 text-center';
         }
       });
