@@ -301,4 +301,20 @@ router.get('/user/:id/lookups', async (req, res) => {
   }
 });
 
+router.post('/organization/create', async (req, res) => {
+  const { name, contact_name, contact_email, contact_phone, billing_address, isActive } = req.body;
+
+  try {
+    await pool.query(`
+      INSERT INTO organizations (name, contact_name, contact_email, contact_phone, billing_address, is_active)
+      VALUES ($1, $2, $3, $4, $5, $6)
+    `, [name, contact_name, contact_email, contact_phone, billing_address, isActive ? true : false]);
+
+    res.redirect('/admin');
+  } catch (err) {
+    console.error('❌ Error inserting organization:', err);
+    res.status(500).send('Error creating organization.');
+  }
+});
+
 module.exports = router;
