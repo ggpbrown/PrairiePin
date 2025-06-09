@@ -311,7 +311,7 @@ router.post('/organization/create', async (req, res) => {
 
   try {
     await pool.query(`
-      INSERT INTO organizations (name, contact_name, contact_email, contact_phone, billing_address, is_active)
+      INSERT INTO organizations (name, contact_name, contact_email, contact_phone, billing_address, isactive)
       VALUES ($1, $2, $3, $4, $5, $6)
     `, [name, contact_name, contact_email, contact_phone, billing_address, isActive ? true : false]);
 
