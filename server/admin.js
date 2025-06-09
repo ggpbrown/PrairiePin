@@ -1,5 +1,5 @@
 const express = require('express');
-const router = express.Router();
+const router = express.Router(); // ✅ Ensures router is initialized
 const { Pool } = require('pg');
 const jwt = require('jsonwebtoken');
 const { sendAccountUpdateEmail } = require('./utils/email');
@@ -299,6 +299,11 @@ router.get('/user/:id/lookups', async (req, res) => {
     console.error("🔥 Error fetching user lookups:", err);
     res.status(500).json({ error: 'Internal server error' });
   }
+});
+
+// ✅ GET /admin/organization/create – Render the New Organization form
+router.get('/organization/create', isAdmin, (req, res) => {
+  res.render('organization-create');
 });
 
 router.post('/organization/create', async (req, res) => {
