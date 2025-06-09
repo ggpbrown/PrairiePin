@@ -45,13 +45,17 @@
 
       <!-- Top Actions -->
       <div class="flex justify-between items-center mb-6">
-      
-            <script>
-            function logout() {
-                localStorage.removeItem('token');
-                window.location.href = '/login.html';
-            }
-            </script>
+        <div class="mb-4">
+          <a href="/register" class="bg-primary text-white px-4 py-2 rounded hover:bg-accent text-sm">
+            ➕ Add New User
+          </a>
+        </div>
+        <script>
+        function logout() {
+            localStorage.removeItem('token');
+            window.location.href = '/login.html';
+        }
+        </script>
       </div>
 
       <!-- Page Title -->
