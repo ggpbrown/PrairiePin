@@ -42,22 +42,23 @@ router.post('/register', async (req, res) => {
   try {
     const hash = await bcrypt.hash(password, 10);
 
-	const result = await pool.query(
-	      `INSERT INTO users
-	      (email, password_hash, first_name, last_name,
-	      address_line1, address_line2, city, province_state, postal_code, country)
-	      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-	      RETURNING id`,
-	      [email, hash, first_name, last_name, address_line1, address_line2, city, province_state, postal_code, country]
-	    );
-	    
-     res.json({ success: true, userId: result.rows[0].id });
-
+    const result = await pool.query(
+      `INSERT INTO users
+       (email, password_hash, first_name, last_name,
+        address_line1, address_line2, city, province_state, postal_code, country, organization_id)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+       RETURNING id`,
+      [email, hash, first_name, last_name, address_line1, address_line2,
+       city, province_state, postal_code, country, 1] // 👈 your test org ID
+    );
+    res.json({ success: true, userId: result.rows[0].id });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Registration failed' });
-  }});
+  }
+});
 
+  
 // Login route
 
 router.post('/login', async (req, res) => {
@@ -87,7 +88,7 @@ router.post('/login', async (req, res) => {
     );
 
 	const token = jwt.sign(
-	  { userId: user.id, email: user.email, firstName: user.first_name, isAdmin: user.is_admin },
+	  { userId: user.id, email: user.email, firstName: user.first_name, isAdmin: user.is_admin, organizationId: user.organization_id },
 	  JWT_SECRET,
 	  { expiresIn: '8h' }
 	);
