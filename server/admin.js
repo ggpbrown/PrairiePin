@@ -303,7 +303,7 @@ router.get('/user/:id/lookups', async (req, res) => {
 
 // ✅ GET /admin/organization/create – Render the New Organization form
 router.get('/organization/create', isAdmin, (req, res) => {
-  res.render('organization-create');
+  res.render('organization-create', { formData: {}, error: null });
 });
 
 router.post('/organization/create', async (req, res) => {
