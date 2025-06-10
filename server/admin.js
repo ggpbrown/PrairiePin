@@ -310,17 +310,15 @@ router.post('/organization/create', async (req, res) => {
   const { name, contact_first_name, contact_last_name, contact_email, contact_phone, billing_address, isActive } = req.body;
 
   try {
-    const contact_name = `${contact_first_name} ${contact_last_name}`;
-
     // Generate a lowercase org_code based on the name + timestamp suffix for uniqueness
     const baseCode = name.toLowerCase().replace(/\s+/g, '').substring(0, 6);
     const uniqueSuffix = Date.now().toString().slice(-4);
     const org_code = `${baseCode}${uniqueSuffix}`;
 
     await pool.query(`
-      INSERT INTO organizations (name, org_code, contact_name, contact_email, contact_phone, billing_address, isactive)
-      VALUES ($1, $2, $3, $4, $5, $6, $7)
-    `, [name, org_code, contact_name, contact_email, contact_phone, billing_address, isActive ? true : false]);
+      INSERT INTO organizations (name, org_code, contact_first_name, contact_last_name, contact_email, contact_phone, billing_address, isactive)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+    `, [name, org_code, contact_first_name, contact_last_name, contact_email, contact_phone, billing_address, isActive ? true : false]);
 
     res.redirect('/admin');
   } catch (err) {

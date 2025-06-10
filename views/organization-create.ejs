@@ -36,42 +36,45 @@
   </header>
 
   <main class="max-w-xl mx-auto mt-10 p-6 bg-white shadow rounded-lg">
+    <% if (typeof error !== 'undefined') { %>
+      <p class="text-red-600 font-semibold mb-4"><%= error %></p>
+    <% } %>
     <h1 class="text-xl font-bold mb-6">Add New Organization</h1>
     <form action="/admin/organization/create" method="POST" class="space-y-4">
 
       <div class="mb-4">
         <label class="block font-semibold">Organization Name</label>
-        <input type="text" name="name" class="w-full border border-gray-300 rounded px-3 py-2">
+        <input type="text" name="name" value="<%= formData?.name || '' %>" class="w-full border border-gray-300 rounded px-3 py-2">
       </div>
 
       <div class="mb-4">
         <label class="block font-semibold">Contact First Name</label>
-        <input type="text" name="contact_first_name" class="w-full border border-gray-300 rounded px-3 py-2">
+        <input type="text" name="contact_first_name" value="<%= formData?.contact_first_name || '' %>" class="w-full border border-gray-300 rounded px-3 py-2">
       </div>
 
       <div class="mb-4">
         <label class="block font-semibold">Contact Last Name</label>
-        <input type="text" name="contact_last_name" class="w-full border border-gray-300 rounded px-3 py-2">
+        <input type="text" name="contact_last_name" value="<%= formData?.contact_last_name || '' %>" class="w-full border border-gray-300 rounded px-3 py-2">
       </div>
 
       <div class="mb-4">
         <label class="block font-semibold">Contact Email</label>
-        <input type="email" name="contact_email" class="w-full border border-gray-300 rounded px-3 py-2">
+        <input type="email" name="contact_email" value="<%= formData?.contact_email || '' %>" class="w-full border border-gray-300 rounded px-3 py-2">
       </div>
 
       <div class="mb-4">
         <label class="block font-semibold">Contact Phone</label>
-        <input type="text" name="contact_phone" class="w-full border border-gray-300 rounded px-3 py-2">
+        <input type="text" name="contact_phone" value="<%= formData?.contact_phone || '' %>" class="w-full border border-gray-300 rounded px-3 py-2">
       </div>
 
       <div class="mb-4">
         <label class="block font-semibold">Billing Address</label>
-        <textarea name="billing_address" rows="3" class="w-full border border-gray-300 rounded px-3 py-2"></textarea>
+        <textarea name="billing_address" rows="3" class="w-full border border-gray-300 rounded px-3 py-2"><%= formData?.billing_address || '' %></textarea>
       </div>
 
       <div class="mb-4">
         <label class="block font-semibold text-primary mb-1">Organization Active</label>
-        <input type="checkbox" name="isActive" id="isActive" checked class="mr-2">
+        <input type="checkbox" name="isActive" id="isActive" <%= formData?.isActive ? 'checked' : '' %> class="mr-2">
         <span class="text-sm text-gray-700">Active</span>
       </div>
 
