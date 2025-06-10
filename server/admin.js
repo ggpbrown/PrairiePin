@@ -1,3 +1,63 @@
+// ✅ Render the Create User form (SysAdmin)
+router.get('/user/create', isAdmin, async (req, res) => {
+  try {
+    const orgResult = await pool.query('SELECT id, name FROM organizations ORDER BY name');
+    res.render('create-user', {
+      organizations: orgResult.rows,
+      error: null,
+      formData: {}
+    });
+  } catch (err) {
+    console.error('❌ Error loading create user form:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+// ✅ Handle Create User form submission
+router.post('/user/create', isAdmin, async (req, res) => {
+  const {
+    first_name, last_name, email, password, confirm_password,
+    organization_id, is_org_admin, is_admin
+  } = req.body;
+
+  if (password !== confirm_password) {
+    return res.render('create-user', {
+      error: 'Passwords do not match.',
+      organizations: await pool.query('SELECT id, name FROM organizations ORDER BY name').then(r => r.rows),
+      formData: req.body
+    });
+  }
+
+  try {
+    const existing = await pool.query('SELECT id FROM users WHERE email = $1', [email]);
+    if (existing.rows.length > 0) {
+      return res.render('create-user', {
+        error: 'A user with that email already exists.',
+        organizations: await pool.query('SELECT id, name FROM organizations ORDER BY name').then(r => r.rows),
+        formData: req.body
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await pool.query(`
+      INSERT INTO users (first_name, last_name, email, password_hash, organization_id, is_org_admin, is_admin)
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
+    `, [
+      first_name,
+      last_name,
+      email,
+      hashedPassword,
+      organization_id,
+      is_org_admin === 'on',
+      is_admin === 'on'
+    ]);
+
+    res.redirect('/admin');
+  } catch (err) {
+    console.error('❌ Error creating new user:', err);
+    res.status(500).send('Server error');
+  }
+});
 const express = require('express');
 const router = express.Router(); // ✅ Ensures router is initialized
 const { Pool } = require('pg');
