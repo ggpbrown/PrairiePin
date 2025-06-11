@@ -17,7 +17,7 @@ const pool = new Pool({
 // ✅ Render the Create User form (SysAdmin)
 router.get('/create-user', isAdmin, async (req, res) => {
   try {
-    const orgResult = await pool.query('SELECT id, name FROM organizations ORDER BY name');
+    const orgResult = await pool.query('SELECT id, name FROM organizations where isactive is TRUE ORDER BY name');
     res.render('create-user', {
       organizations: orgResult.rows,
       error: null,
