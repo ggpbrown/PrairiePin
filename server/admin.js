@@ -1,3 +1,19 @@
+
+const express = require('express');
+const router = express.Router(); // ✅ Ensures router is initialized
+const { Pool } = require('pg');
+const jwt = require('jsonwebtoken');
+const { sendAccountUpdateEmail } = require('./utils/email');
+const { authenticateToken, isAdmin } = require('./auth');
+const bcrypt = require('bcryptjs');
+
+require('dotenv').config();
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }
+});
+
 // ✅ Render the Create User form (SysAdmin)
 router.get('/user/create', isAdmin, async (req, res) => {
   try {
@@ -57,20 +73,6 @@ router.post('/user/create', isAdmin, async (req, res) => {
     console.error('❌ Error creating new user:', err);
     res.status(500).send('Server error');
   }
-});
-const express = require('express');
-const router = express.Router(); // ✅ Ensures router is initialized
-const { Pool } = require('pg');
-const jwt = require('jsonwebtoken');
-const { sendAccountUpdateEmail } = require('./utils/email');
-const { authenticateToken, isAdmin } = require('./auth');
-const bcrypt = require('bcryptjs');
-
-require('dotenv').config();
-
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }
 });
 
 // ✅ Get all users for displaying on admin dashboard main page
