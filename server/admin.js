@@ -15,7 +15,7 @@ const pool = new Pool({
 });
 
 // ✅ Render the Create User form (SysAdmin)
-router.get('/user/create', isAdmin, async (req, res) => {
+router.get('/create-user', isAdmin, async (req, res) => {
   try {
     const orgResult = await pool.query('SELECT id, name FROM organizations ORDER BY name');
     res.render('create-user', {
@@ -30,7 +30,7 @@ router.get('/user/create', isAdmin, async (req, res) => {
 });
 
 // ✅ Handle Create User form submission
-router.post('/user/create', isAdmin, async (req, res) => {
+router.post('/create-user', isAdmin, async (req, res) => {
   const {
     first_name, last_name, email, password, confirm_password,
     organization_id, is_org_admin, is_admin
