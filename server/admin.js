@@ -3,7 +3,7 @@ const router = express.Router(); // ✅ Ensures router is initialized
 const { Pool } = require('pg');
 const jwt = require('jsonwebtoken');
 const { sendAccountUpdateEmail } = require('./utils/email');
-const { authenticateToken, isAdmin, ensureAuthenticated } = require('./auth');
+const { authenticateToken, isAdmin, ensureAuthenticated } = require('./server/auth');
 const bcrypt = require('bcryptjs');
 
 require('dotenv').config();
