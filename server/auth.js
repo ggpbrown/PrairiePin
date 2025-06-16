@@ -96,7 +96,14 @@ router.post('/login', async (req, res) => {
     );
 
 	const token = jwt.sign(
-	  { userId: user.id, email: user.email, firstName: user.first_name, isAdmin: user.is_admin, organizationId: user.organization_id },
+	  {
+	    userId: user.id,
+	    email: user.email,
+	    firstName: user.first_name,
+	    isAdmin: user.is_admin,
+	    isOrgAdmin: user.is_org_admin,
+	    organizationId: user.organization_id
+	  },
 	  JWT_SECRET,
 	  { expiresIn: '8h' }
 	);
@@ -136,6 +143,25 @@ function authenticateToken(req, res, next) {
 }
 
 // ✅ Add this in auth.js
+function ensureAuthenticated(req, res, next) {
+  const token = req.cookies.token;
+
+  if (!token) {
+    console.warn("🔐 No token found — redirecting to login.");
+    return res.redirect('/login.html');
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (err) {
+    console.error("🔐 Token verification failed in ensureAuthenticated:", err.message);
+    return res.status(403).send("Unauthorized");
+  }
+}
+
+// ✅ Add this in auth.js
 function isAdmin(req, res, next) {
   const token = req.cookies.token;
 
@@ -172,5 +198,6 @@ router.get('/logout', (req, res) => {
 module.exports = {
   router,
   authenticateToken,
-  isAdmin
+  isAdmin,
+  ensureAuthenticated
 };
