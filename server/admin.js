@@ -1,4 +1,3 @@
-
 const express = require('express');
 const router = express.Router(); // ✅ Ensures router is initialized
 const { Pool } = require('pg');
@@ -12,6 +11,42 @@ require('dotenv').config();
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false }
+});
+
+// ✅ Render the Admin Dashboard with data based on privileges
+router.get('/admin-dashboard', ensureAuthenticated, async (req, res) => {
+  try {
+    // If SysAdmin, render dashboard with only their user info
+    if (req.user.isAdmin) {
+      return res.render('admin-dashboard', {
+        user: req.user,
+        isSysAdmin: true
+      });
+    }
+
+    // If OrgAdmin, fetch users in the same organization
+    if (req.user.isOrgAdmin) {
+      const orgUsers = await pool.query(`
+        SELECT id, first_name, last_name, email, last_login,
+          (SELECT COUNT(*) FROM lookups WHERE lookups.user_id = users.id) AS total_lookups
+        FROM users
+        WHERE organization_id = $1
+        ORDER BY last_name ASC
+      `, [req.user.organization_id]);
+
+      return res.render('admin-dashboard', {
+        user: req.user,
+        isSysAdmin: false,
+        orgUsers: orgUsers.rows
+      });
+    }
+
+    // Neither Admin nor Org Admin
+    return res.status(403).send('Access denied');
+  } catch (err) {
+    console.error('🔥 Error loading admin dashboard:', err);
+    res.status(500).send('Server error');
+  }
 });
 
 // ✅ Render the Create User form (SysAdmin)
@@ -380,7 +415,7 @@ router.post('/organization/create', async (req, res) => {
     await pool.query(`
       INSERT INTO organizations (name, org_code, contact_first_name, contact_last_name, contact_email, contact_phone, billing_address, isactive)
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-    `, [name, org_code, contact_first_name, contact_last_name, contact_email, contact_phone, billing_address, isActive ? true : false]);
+    `, [name, org_code, contact_first_name, contact_last_name, contact_email, contact_phone, billing_address, isActive === 'on']);
 
     res.redirect('/admin');
   } catch (err) {

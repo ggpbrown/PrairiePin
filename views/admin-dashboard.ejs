@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+  <script>
+    function switchTab(tabName) {
+      document.getElementById('tab-users').style.display = tabName === 'users' ? 'block' : 'none';
+      document.getElementById('tab-orgs').style.display = tabName === 'orgs' ? 'block' : 'none';
+
+      document.getElementById('btn-users').classList.toggle('bg-blue-600', tabName === 'users');
+      document.getElementById('btn-users').classList.toggle('bg-gray-300', tabName !== 'users');
+      document.getElementById('btn-orgs').classList.toggle('bg-blue-600', tabName === 'orgs');
+      document.getElementById('btn-orgs').classList.toggle('bg-gray-300', tabName !== 'orgs');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      switchTab('users');
+    });
+  </script>
+</head>
+<body class="bg-gray-100 text-gray-800">
+  <%- include('partials/header') %>
+
+  <main class="max-w-6xl mx-auto mt-8 px-4">
+  <% if (user.isAdmin) { %>
+    <h1 class="text-3xl font-bold mb-6 text-center">SysAdmin Dashboard</h1>
+
+    <div class="flex justify-center space-x-4 mb-6">
+      <button id="btn-users" onclick="switchTab('users')" class="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700">Users</button>
+      <button id="btn-orgs" onclick="switchTab('orgs')" class="px-4 py-2 rounded bg-gray-300 text-gray-800 hover:bg-gray-400">Organizations</button>
+    </div>
+
+    <div id="tab-users" style="display: none;">
+      <%- include('partials/admin-users') %>
+    </div>
+
+    <div id="tab-orgs" style="display: none;">
+      <%- include('partials/admin-orgs') %>
+    </div>
+  <% } else if (user.isOrgAdmin) { %>
+    <h1 class="text-3xl font-bold mb-6 text-center">Organization Admin Dashboard</h1>
+
+    <div id="tab-users">
+      <%- include('partials/org-admin-users') %>
+    </div>
+  <% } else { %>
+    <p class="text-center text-red-600">You do not have admin access.</p>
+  <% } %>
+  </main>
+</body>
+</html>
