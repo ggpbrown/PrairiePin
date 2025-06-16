@@ -213,13 +213,13 @@
           document.getElementById('greeting').textContent = `Welcome back, ${user.firstName}!`;
         }
 
-        if (user?.isAdmin) {
-          const link = document.createElement('a');
-          link.href = 'https://prairiepin-production.up.railway.app/admin';
-          link.textContent = 'Admin Tools';
-          link.className = 'text-sm text-blue-600 underline';
-          document.querySelector('header .flex').prepend(link);
-        }
+      if (user?.isAdmin || user?.isOrgAdmin) {          
+        const link = document.createElement('a');
+                link.href = '/admin-dashboard';
+                link.textContent = 'Admin Tools';
+                link.className = 'text-sm text-blue-600 underline';
+                document.querySelector('header .flex').prepend(link);
+              }
       } catch (err) {
         console.error('Failed to fetch user info:', err);
         window.location.href = '/login.html'; // fallback
