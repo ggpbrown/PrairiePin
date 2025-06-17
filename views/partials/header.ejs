@@ -2,3 +2,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin Dashboard</title>
 <link rel="stylesheet" href="/styles.css">
+<!-- /views/partials/header.ejs -->
+<header class="bg-gray-800 text-white p-4">
+  <div class="container mx-auto flex items-center justify-between">
+    <a href="/" class="text-xl font-semibold">PrairiePin Admin</a>
+    <nav>
+      <% if (user?.isAdmin) { %>
+        <a href="/admin-dashboard" class="px-2">Admin Dashboard</a>
+      <% } %>
+      <a href="/dashboard" class="px-2">Dashboard</a>
+      <button id="logout" class="px-2">Logout</button>
+    </nav>
+  </div>
+</header>
