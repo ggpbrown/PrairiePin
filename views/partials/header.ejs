@@ -1,28 +1,12 @@
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Dashboard</title>
-<link rel="stylesheet" href="/styles.css">
 <!-- /views/partials/header.ejs -->
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PrairiePin Admin</title>
-
-  <!-- Tailwind CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: '#085e46',
-            accent: '#8cc084',
-            softgreen: '#F1FDF4',
-            softgray: '#F5F6F8',
-            steel: '#91a2a8'
-          }
-        }
-      }
-    };
-  </script>
-</head>
+<header class="bg-green-50 border-b border-green-100 px-6 py-4 flex justify-between items-center">
+  <div class="flex items-center space-x-3">
+    <img src="/images/prairiepin-logo.png" alt="PrairiePin Logo" class="h-10">
+    <p class="text-sm text-steel">Because the grid doesn't have street signs.</p>
+  </div>
+  <nav class="space-x-4">
+    <a href="/admin-dashboard" class="text-blue-800 hover:underline">Admin Tools</a>
+    <a href="/profile" class="text-blue-800 hover:underline">My Profile</a>
+    <a href="/logout" class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 text-sm">Logout</a>
+  </nav>
+</header>
