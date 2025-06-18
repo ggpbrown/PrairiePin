@@ -1,30 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script>
-    function switchTab(tabName) {
-      document.getElementById('tab-users').style.display = tabName === 'users' ? 'block' : 'none';
-      document.getElementById('tab-orgs').style.display = tabName === 'orgs' ? 'block' : 'none';
-
-      document.getElementById('btn-users').classList.toggle('bg-blue-600', tabName === 'users');
-      document.getElementById('btn-users').classList.toggle('bg-gray-300', tabName !== 'users');
-      document.getElementById('btn-orgs').classList.toggle('bg-blue-600', tabName === 'orgs');
-      document.getElementById('btn-orgs').classList.toggle('bg-gray-300', tabName !== 'orgs');
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      switchTab('users');
-    });
-  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard – PrairiePin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-softgray text-gray-900 font-sans min-h-screen">
+<body class="bg-gray-100 text-gray-900 font-sans min-h-screen">
   <%- include('partials/header') %>
-  <div class="max-w-6xl mx-auto px-4 py-8">
-    <!-- Your admin content goes here -->
-
-  <main class="max-w-6xl mx-auto mt-8 px-4">
+  <main class="max-w-6xl mx-auto px-6 py-8 mt-10 bg-white shadow-md rounded-md">
     <!-- debug info -->
-    <div class="bg-yellow-100 border border-yellow-400 p-4 my-4 rounded text-sm">
+    <div class="bg-blue-50 border border-blue-300 p-4 my-6 rounded text-sm">
         <p>User: <%= user.firstName %></p>
         <p>isAdmin: <%= user.isAdmin %></p>
         <p>isOrgAdmin: <%= user.isOrgAdmin %></p>
@@ -55,6 +41,20 @@
     <p class="text-center text-red-600">You do not have admin access.</p>
   <% } %>
   </main>
-  </div>
+  <script>
+    function switchTab(tabName) {
+      document.getElementById('tab-users').style.display = tabName === 'users' ? 'block' : 'none';
+      document.getElementById('tab-orgs').style.display = tabName === 'orgs' ? 'block' : 'none';
+
+      document.getElementById('btn-users').classList.toggle('bg-blue-600', tabName === 'users');
+      document.getElementById('btn-users').classList.toggle('bg-gray-300', tabName !== 'users');
+      document.getElementById('btn-orgs').classList.toggle('bg-blue-600', tabName === 'orgs');
+      document.getElementById('btn-orgs').classList.toggle('bg-gray-300', tabName !== 'orgs');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      switchTab('users');
+    });
+  </script>
 </body>
 </html>
