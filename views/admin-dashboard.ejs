@@ -19,9 +19,21 @@
   <% if (user.isAdmin) { %>
     <h1 class="text-3xl font-bold mb-6 text-center">SysAdmin Dashboard</h1>
 
-    <div class="flex justify-center space-x-4 mb-6">
-      <button id="btn-users" onclick="switchTab('users')" class="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700">Users</button>
-      <button id="btn-orgs" onclick="switchTab('orgs')" class="px-4 py-2 rounded bg-gray-300 text-gray-800 hover:bg-gray-400">Organizations</button>
+    <div class="flex justify-center my-4 space-x-2">
+        <button
+            id="users-tab"
+            class="px-4 py-2 rounded font-medium text-white bg-green-700 hover:bg-green-800"
+            onclick="showTab('users')"
+        >
+            Users
+        </button>
+        <button
+            id="organizations-tab"
+            class="px-4 py-2 rounded font-medium text-green-700 bg-gray-200 hover:bg-gray-300"
+            onclick="showTab('organizations')"
+        >
+            Organizations
+        </button>
     </div>
 
     <div id="tab-users" style="display: none;">
@@ -42,19 +54,27 @@
   <% } %>
   </main>
   <script>
-    function switchTab(tabName) {
-      document.getElementById('tab-users').style.display = tabName === 'users' ? 'block' : 'none';
-      document.getElementById('tab-orgs').style.display = tabName === 'orgs' ? 'block' : 'none';
+  function showTab(tab) {
+    const tabs = ['users', 'organizations'];
 
-      document.getElementById('btn-users').classList.toggle('bg-blue-600', tabName === 'users');
-      document.getElementById('btn-users').classList.toggle('bg-gray-300', tabName !== 'users');
-      document.getElementById('btn-orgs').classList.toggle('bg-blue-600', tabName === 'orgs');
-      document.getElementById('btn-orgs').classList.toggle('bg-gray-300', tabName !== 'orgs');
-    }
+    tabs.forEach(id => {
+      const panel = document.getElementById(`tab-${id}`);
+      const button = document.getElementById(`${id}-tab`);
+      
+      const isActive = id === tab;
+      panel.style.display = isActive ? 'block' : 'none';
 
-    document.addEventListener('DOMContentLoaded', () => {
-      switchTab('users');
+      if (isActive) {
+        button.classList.add('bg-green-700', 'text-white');
+        button.classList.remove('bg-gray-200', 'text-green-700');
+      } else {
+        button.classList.remove('bg-green-700', 'text-white');
+        button.classList.add('bg-gray-200', 'text-green-700');
+      }
     });
-  </script>
+  }
+
+  document.addEventListener('DOMContentLoaded', () => showTab('users'));
+</script>
 </body>
 </html>
