@@ -42,7 +42,19 @@
       <p>No users array defined.</p>
     <% } %>
     <!-- partial code starts here-->
+ <div id="tab-users" style="display: none;">
+    <%- include('partials/admin-users', { users: users }) %>
+    </div>
 
+    <div id="tab-orgs" style="display: none;">
+      <%- include('partials/admin-orgs', { organizations: organizations }) %>
+    </div>
+  <% } else if (user.isOrgAdmin) { %>
+    <h1 class="text-3xl font-bold mb-6 text-center">Organization Admin Dashboard</h1>
+
+    <div id="tab-users">
+     <%- include('partials/admin-orgs', { organizations: organizations }) %>
+    </div>
         <!-- partial code ends here-->
 
   <% } else { %>
