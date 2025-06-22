@@ -32,6 +32,9 @@ router.get('/admin-dashboard', ensureAuthenticated, async (req, res) => {
         `)
       ]);
 
+      console.log(`✅ Retrieved ${usersResult.rows.length} users for SysAdmin view.`);
+      console.log(usersResult.rows.slice(0, 3)); // Optional: peek at first 3
+
       return res.render('admin-dashboard', {
         user: req.user,
         isSysAdmin: true,
