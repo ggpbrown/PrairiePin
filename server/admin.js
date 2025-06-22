@@ -16,7 +16,7 @@ const pool = new Pool({
 // ✅ Render the Admin Dashboard with data based on privileges
 router.get('/admin-dashboard', ensureAuthenticated, async (req, res) => {
   
-  console.log('Called /admin-dashboard router');
+  console.log('Called /admin-dashboard router in admin.js');
 
   try {
     if (req.user.isAdmin) {
