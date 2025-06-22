@@ -282,10 +282,8 @@ app.get('/profile', authenticateToken, (req, res) => {
   res.sendFile(path.join(__dirname, 'public/user-profile.html'));
 });
 
-app.get('/admin-dashboard', authenticateToken, async (req, res) => {
-    console.log('Called /admin-dashboard router in server.js');
-
-  res.render('admin-dashboard', { user: req.user });
+app.get('/admin-dashboard', (req, res) => {
+  return res.redirect('/admin/admin-dashboard');
 });
 
 // 🚦 Start Server
