@@ -16,11 +16,27 @@ const pool = new Pool({
 // ✅ Render the Admin Dashboard with data based on privileges
 router.get('/admin-dashboard', ensureAuthenticated, async (req, res) => {
   try {
-    // If SysAdmin, render dashboard with only their user info
     if (req.user.isAdmin) {
+      const [usersResult, orgsResult] = await Promise.all([
+        pool.query(`
+          SELECT id, first_name, last_name, email, last_login, organization_id,
+            (SELECT name FROM organizations WHERE id = users.organization_id) AS organization_name,
+            (SELECT COUNT(*) FROM lookups WHERE user_id = users.id) AS total_lookups
+          FROM users
+          ORDER BY last_name ASC
+        `),
+        pool.query(`
+          SELECT id, name, contact_email, isactive, created_at
+          FROM organizations
+          ORDER BY name ASC
+        `)
+      ]);
+
       return res.render('admin-dashboard', {
         user: req.user,
-        isSysAdmin: true
+        isSysAdmin: true,
+        users: usersResult.rows,
+        organizations: orgsResult.rows
       });
     }
 

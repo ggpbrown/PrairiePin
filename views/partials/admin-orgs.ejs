@@ -20,12 +20,16 @@
         </tr>
       </thead>
       <tbody class="bg-white divide-y divide-gray-200">
-        <tr>
-          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Acme Corp</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">@acme.com</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2025-05-01</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-semibold">Active</td>
-        </tr>
+        <% organizations.forEach(org => { %>
+          <tr>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><%= org.name %></td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= org.contact_email %></td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= org.created_at ? org.created_at.toISOString().split('T')[0] : '—' %></td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm <%= org.isactive ? 'text-green-600' : 'text-gray-400' %> font-semibold">
+              <%= org.isactive ? 'Active' : 'Inactive' %>
+            </td>
+          </tr>
+        <% }) %>
       </tbody>
     </table>
   </div>

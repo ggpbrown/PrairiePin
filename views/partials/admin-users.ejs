@@ -12,13 +12,14 @@
         </tr>
       </thead>
       <tbody class="divide-y divide-gray-200">
-        <tr>
-          <td class="px-6 py-4 font-medium text-gray-800">Jane Doe</td>
-          <td class="px-6 py-4 text-gray-700">jane@example.com</td>
-          <td class="px-6 py-4 text-gray-600">2025-06-15</td>
-          <td class="px-6 py-4 text-green-700 font-semibold">Admin</td>
-        </tr>
-        <!-- Repeat rows here -->
+        <% users.forEach(user => { %>
+          <tr>
+            <td class="px-6 py-4 font-medium text-gray-800"><%= user.first_name %> <%= user.last_name %></td>
+            <td class="px-6 py-4 text-gray-700"><%= user.email %></td>
+            <td class="px-6 py-4 text-gray-600"><%= user.last_login ? user.last_login.toISOString().split('T')[0] : '—' %></td>
+            <td class="px-6 py-4 text-green-700 font-semibold"><%= user.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : '—' %></td>
+          </tr>
+        <% }) %>
       </tbody>
     </table>
   </div>
