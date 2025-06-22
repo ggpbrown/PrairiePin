@@ -38,11 +38,11 @@
     </div>
     <p>Debug Users Length: <%= users?.length || 'N/A' %></p>
     <div id="tab-users" style="display: none;">
-      <%- include('partials/admin-users') %>
+      <%- include('partials/admin-users', { users: users }) %>
     </div>
 
     <div id="tab-orgs" style="display: none;">
-     <%- include('partials/admin-users', { users: users }) %>
+      <%- include('partials/admin-orgs', { organizations: organizations }) %>
     </div>
   <% } else if (user.isOrgAdmin) { %>
     <h1 class="text-3xl font-bold mb-6 text-center">Organization Admin Dashboard</h1>
