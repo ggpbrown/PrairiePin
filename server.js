@@ -282,9 +282,6 @@ app.get('/profile', authenticateToken, (req, res) => {
   res.sendFile(path.join(__dirname, 'public/user-profile.html'));
 });
 
-app.get('/admin-dashboard', authenticateToken, async (req, res) => {
-  res.render('admin-dashboard', { user: req.user });
-});
 
 // 🚦 Start Server
 app.listen(PORT, () => {
