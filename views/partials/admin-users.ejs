@@ -7,6 +7,7 @@
         <tr>
           <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Name</th>
           <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Email</th>
+          <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Organization</th>
           <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Last Login</th>
           <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Role</th>
         </tr>
@@ -14,10 +15,23 @@
       <tbody class="divide-y divide-gray-200">
         <% users.forEach(user => { %>
           <tr>
-            <td class="px-6 py-4 font-medium text-gray-800"><%= user.first_name %> <%= user.last_name %></td>
+            <td class="px-6 py-4 font-medium text-gray-800">
+              <a href="/user-profile/<%= user.id %>" class="text-blue-600 hover:underline">
+                <%= user.first_name %> <%= user.last_name %>
+              </a>
+            </td>
             <td class="px-6 py-4 text-gray-700"><%= user.email %></td>
+            <td class="px-6 py-4 text-gray-700"><%= user.organization_name || '—' %></td>
             <td class="px-6 py-4 text-gray-600"><%= user.last_login ? user.last_login.toISOString().split('T')[0] : '—' %></td>
-            <td class="px-6 py-4 text-green-700 font-semibold"><%= user.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : '—' %></td>
+            <td class="px-6 py-4 text-green-700 font-semibold">
+              <% if (user.isadmin) { %>
+                SysAdmin
+              <% } else if (user.isorgadmin) { %>
+                OrgAdmin
+              <% } else { %>
+                User
+              <% } %>
+            </td>
           </tr>
         <% }) %>
       </tbody>
