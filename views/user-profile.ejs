@@ -30,7 +30,7 @@
     </div>
     <div class="flex gap-4">
       <a href="/dashboard.html" class="text-accent hover:underline">← Back to Dashboard</a>
-      <a href="/admin" class="text-blue-600 hover:underline">← Back to Admin</a>
+      <a href="/admin" class="text-blue-600 hover:underline">← Admin Dashboard</a>
       <a href="#" onclick="logout()" class="bg-red-600 text-white px-4 py-1 rounded hover:bg-red-700 text-sm">Logout</a>
     </div>
   </header>
@@ -43,6 +43,9 @@
       <div class="mb-6 text-steel text-sm">
         <p><span class="font-semibold text-black">Email:</span> <%= user.email %></p>
         <p><span class="font-semibold text-black">Last Login:</span> <%= user.last_login ? new Date(user.last_login).toLocaleString() : 'Never' %></p>
+        <p><span class="font-semibold text-black">Role:</span> 
+          <%= user.isadmin ? 'SysAdmin' : user.isorgadmin ? 'Org Admin' : 'User' %>
+        </p>
     </div>
     </section>
     <div class="mt-6">
