@@ -1,3 +1,12 @@
+
+const express = require('express');
+const router = express.Router();
+const jwt = require('jsonwebtoken');
+const { pool } = require('../db'); // ✅ correct // Adjust if your DB import differs
+
+
+// ... Add /me and /me update routes here ...
+
 // Route to serve user profile by ID
 router.get('/profile/:id', async (req, res) => {
   try {
@@ -20,13 +29,6 @@ router.get('/profile/:id', async (req, res) => {
     res.status(500).send('Server error');
   }
 });
-const express = require('express');
-const router = express.Router();
-const jwt = require('jsonwebtoken');
-const { pool } = require('../db'); // ✅ correct // Adjust if your DB import differs
-
-
-// ... Add /me and /me update routes here ...
 
 router.get('/me', async (req, res) => {
   const authHeader = req.headers.authorization;
