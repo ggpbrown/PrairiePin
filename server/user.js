@@ -1,3 +1,25 @@
+// Route to serve user profile by ID
+router.get('/profile/:id', async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    const result = await pool.query(
+      `SELECT id, email, first_name, last_name, city, province_state, last_login, organization_id
+       FROM users
+       WHERE id = $1`,
+      [userId]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).send('User not found');
+    }
+
+    res.render('user-profile', { user: result.rows[0] });
+  } catch (err) {
+    console.error('❌ Error loading user profile:', err);
+    res.status(500).send('Server error');
+  }
+});
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
