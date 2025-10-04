@@ -1,38 +1,57 @@
+// /netlify/functions/convert.js
+const { Client } = require('pg');
 const fetch = require('node-fetch');
 
-exports.handler = async function(event, context) {
-  const lld = event.queryStringParameters.lld;
-  console.log(`🔎 Netlify function received LLD: ${lld}`);
-
-  if (!lld) {
-    console.warn('⚠️ Missing LLD parameter');
-    return {
-      statusCode: 400,
-      body: JSON.stringify({ error: 'Missing LLD parameter' })
-    };
-  }
-
-  const replitUrl = `https://dlstomapbackend-ggpbrown.replit.app/convert?lld=${encodeURIComponent(lld)}`;
-
+exports.handler = async (event) => {
   try {
-    const response = await fetch(replitUrl);
-    const data = await response.json();
+    if (event.httpMethod !== 'GET') {
+      return { statusCode: 405, body: 'Method Not Allowed' };
+    }
 
-    console.log(`✅ Replit responded with coordinates for ${lld}:`, data);
+    const lld = new URLSearchParams(event.rawQuery).get('lld');
+    if (!lld) {
+      return { statusCode: 400, body: JSON.stringify({ error: 'Missing lld' }) };
+    }
 
+    const REPLIT_CONVERTER_URL = process.env.REPLIT_CONVERTER_URL;
+    const DATABASE_URL = process.env.DATABASE_URL;
+    const SOURCE_TAG = process.env.SOURCE_TAG || 'lite';
+
+    // 1) Call your existing Replit converter (unchanged UX)
+    const up = new URL(REPLIT_CONVERTER_URL);
+    up.searchParams.set('lld', lld);
+
+    const convRes = await fetch(up.toString());
+    if (!convRes.ok) {
+      return { statusCode: convRes.status, body: JSON.stringify({ error: 'Converter error' }) };
+    }
+    const { latitude, longitude, error } = await convRes.json();
+    if (error || latitude == null || longitude == null) {
+      return { statusCode: 404, body: JSON.stringify({ error: error || 'No coordinates found' }) };
+    }
+
+    // 2) Log to Railway (best-effort — don’t fail the user if logging fails)
+    try {
+      const client = new Client({ connectionString: DATABASE_URL, ssl: { rejectUnauthorized: false } });
+      await client.connect();
+      await client.query(
+        `INSERT INTO lookups (lld_entered, latitude, longitude, province, source)
+         VALUES ($1, $2, $3, NULL, $4)`,
+        [lld, latitude, longitude, SOURCE_TAG]
+      );
+      await client.end();
+    } catch (e) {
+      console.warn('Logging failed (non-fatal):', e.message);
+    }
+
+    // 3) Return to browser
     return {
       statusCode: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ latitude, longitude }),
     };
-  } catch (error) {
-    console.error('❌ Proxy fetch error:', error.message);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: 'Proxy error: ' + error.message })
-    };
+  } catch (e) {
+    console.error(e);
+    return { statusCode: 500, body: JSON.stringify({ error: 'Server error' }) };
   }
 };
