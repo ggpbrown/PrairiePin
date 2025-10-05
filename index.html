@@ -88,9 +88,20 @@
 </script>
 </head>
 <body class="bg-gray-100 min-h-screen">
-  <header class="bg-green-800 text-white text-center py-4 shadow-md">
-    <h1 class="text-2xl font-semibold tracking-wide">PrairiePin</h1>
-  </header>
+  <header style="background:#0b0f14;border-bottom:1px solid #1f2a39;">
+  <div style="max-width:900px;margin:0 auto;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;color:#e9eef5;">
+    <div style="display:flex;gap:10px;align-items:center;">
+      <img src="/images/prairiepin-logo.png" alt="PrairiePin logo" style="height:28px;width:auto;" />
+      <div style="line-height:1.1">
+        <strong>PrairiePin</strong>
+        <div style="font-size:12px;color:#9bb0c5;">Legal Land Description → GPS</div>
+      </div>
+    </div>
+    <span style="background:#7ee1b3;color:#0b0f14;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600;">
+      Winter Pilot
+    </span>
+  </div>
+</header>
   <main class="flex items-center justify-center p-4">
     <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg w-full max-w-md">
       <div class="text-center mb-6">
@@ -121,8 +132,15 @@
       <button id="copyButton" onclick="copyCoords(this)" class="mt-4 bg-gray-700 text-white py-2 px-4 rounded-lg hover:bg-gray-800 transition hidden">Copy Coordinates</button>
     </div>
   </main>
-  <footer class="text-center text-gray-400 text-xs py-4">
-    © 2024 Grant Brown. All rights reserved. PrairiePin is a trademark of its respective creator.
-  </footer>
+  <footer style="border-top:1px solid #1f2a39;background:#0b0f14;color:#9bb0c5;">
+  <div style="max-width:900px;margin:0 auto;padding:18px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
+    <div>
+      © 2025 <a href="https://claritybygrant.com" target="_blank" rel="noopener" style="color:#e9eef5;text-decoration:none;border-bottom:1px dotted rgba(255,255,255,.25);">Clarity by Grant</a>
+      <span style="opacity:.6;margin:0 6px;">•</span>
+      PrairiePin <span style="color:#7bd3ff;font-weight:600;">Lite</span>
+    </div>
+    <a href="mailto:grant@claritybygrant.com" style="color:#e9eef5;text-decoration:none;">Contact</a>
+  </div>
+</footer>
 </body>
 </html>
