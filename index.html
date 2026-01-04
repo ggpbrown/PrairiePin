@@ -44,7 +44,9 @@
     copyButton.classList.add('hidden');
 
     try {
-      const response = await fetch(`/.netlify/functions/convert?lld=${encodeURIComponent(input)}`);
+      // const response = await fetch(`/.netlify/functions/convert?lld=${encodeURIComponent(input)}`);
+      const response = await fetch(`https://prairiepin-backend-production.up.railway.app/convert?lld=${encodeURIComponent(input)}`);
+
 
       if (!response.ok) {
         output.textContent = `Error: ${response.status} ${response.statusText}`;
